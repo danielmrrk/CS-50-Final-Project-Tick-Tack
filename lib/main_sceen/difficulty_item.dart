@@ -8,9 +8,8 @@ class DifficultyItem extends StatefulWidget {
     this.rightSide,
     this.upSide,
     this.downSide,
-    required this.deactivateSelection,
-    required this.deactivate,
-    required this.isDarkened,
+    required this.setFocus,
+    required this.maybeDarken,
     required this.difficultyDisplay,
   });
 
@@ -18,9 +17,8 @@ class DifficultyItem extends StatefulWidget {
   final bool? rightSide;
   final bool? downSide;
   final bool? upSide;
-  final Function(bool selected) deactivateSelection;
-  final bool deactivate;
-  final bool isDarkened;
+  final Function(String difficultyName) setFocus;
+  final bool maybeDarken;
   final Difficulty difficultyDisplay;
 
   @override
@@ -28,59 +26,53 @@ class DifficultyItem extends StatefulWidget {
 }
 
 class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStateMixin {
-  bool selected = false;
-  bool mainSelect = false;
-
   @override
   Widget build(BuildContext context) {
-    if (widget.deactivate && !mainSelect) selected = false;
-    mainSelect = false;
     return Padding(
       padding: EdgeInsets.fromLTRB(
         widget.rightSide == true
-            ? !selected
+            ? !widget.difficultyDisplay.focused
                 ? 6
                 : 0
             : 0,
         widget.downSide == true
-            ? !selected
+            ? !widget.difficultyDisplay.focused
                 ? 6
                 : 0
             : 0,
         widget.leftSide == true
-            ? !selected
+            ? !widget.difficultyDisplay.focused
                 ? 6
                 : 0
             : 0,
         widget.upSide == true
-            ? !selected
+            ? !widget.difficultyDisplay.focused
                 ? 6
                 : 0
             : 0,
       ),
       child: GestureDetector(
         onTap: () {
-          setState(() {
-            selected = !selected;
-            widget.deactivateSelection(selected);
-            mainSelect = true;
-          });
+          widget.setFocus(widget.difficultyDisplay.displayName);
         },
         child: SizedBox(
           height: 196,
           width: 172,
           child: Card(
-            margin: EdgeInsets.all(selected ? 0 : 4),
+            margin: EdgeInsets.all(widget.difficultyDisplay.focused ? 0 : 4),
             clipBehavior: Clip.hardEdge,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: selected ? const Color(0xff00A5EC) : Colors.white, width: selected ? 4 : 2, strokeAlign: -1),
+              side: BorderSide(
+                  color: widget.difficultyDisplay.focused ? const Color(0xff00A5EC) : Colors.white,
+                  width: widget.difficultyDisplay.focused ? 4 : 2,
+                  strokeAlign: -1),
             ),
             child: Image(
               image: AssetImage(
-                selected
+                widget.difficultyDisplay.focused
                     ? "assets/edited_${widget.difficultyDisplay.technicalName}.png"
-                    : widget.isDarkened
+                    : widget.maybeDarken
                         ? "assets/grey_${widget.difficultyDisplay.technicalName}.png"
                         : "assets/${widget.difficultyDisplay.technicalName}.png",
               ),

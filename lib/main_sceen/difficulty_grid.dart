@@ -10,8 +10,8 @@ class DifficultyGrid extends StatefulWidget {
 }
 
 class _DifficultyGridState extends State<DifficultyGrid> {
-  bool deactivatedStatus = false;
-  bool isDarkened = false;
+  bool _maybeDarken = false;
+  Difficulty? _selectedDifficulty;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -24,33 +24,29 @@ class _DifficultyGridState extends State<DifficultyGrid> {
           DifficultyItem(
             leftSide: true,
             upSide: true,
-            deactivateSelection: deactivateSelection,
-            deactivate: deactivatedStatus,
-            isDarkened: isDarkened,
+            setFocus: setFocus,
+            maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.drunkard,
           ),
           DifficultyItem(
             rightSide: true,
             upSide: true,
-            deactivateSelection: deactivateSelection,
-            deactivate: deactivatedStatus,
-            isDarkened: isDarkened,
+            setFocus: setFocus,
+            maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.novice,
           ),
           DifficultyItem(
             leftSide: true,
             downSide: true,
-            deactivateSelection: deactivateSelection,
-            deactivate: deactivatedStatus,
-            isDarkened: isDarkened,
+            setFocus: setFocus,
+            maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.whiteKnight,
           ),
           DifficultyItem(
             rightSide: true,
             downSide: true,
-            deactivateSelection: deactivateSelection,
-            deactivate: deactivatedStatus,
-            isDarkened: isDarkened,
+            setFocus: setFocus,
+            maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.darkWizard,
           )
         ],
@@ -58,18 +54,17 @@ class _DifficultyGridState extends State<DifficultyGrid> {
     );
   }
 
-  void deactivateSelection(bool selected) {
+  void setFocus(String difficultyName) {
     setState(() {
-      deactivatedStatus = true;
-      if (selected) {
-        isDarkened = true;
-      } else {
-        isDarkened = false;
+      for (Difficulty rank in Difficulty.rank) {
+        if (rank.displayName == difficultyName) {
+          rank.focused = !rank.focused;
+          _maybeDarken = rank.focused;
+          _selectedDifficulty = rank.focused ? rank : null;
+        } else {
+          rank.focused = false;
+        }
       }
     });
   }
-
-  // void setFocus(String difficultyName) {
-  //   if ()
-  // }
 }
