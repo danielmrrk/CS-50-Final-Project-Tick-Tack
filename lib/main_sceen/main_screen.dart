@@ -14,7 +14,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff271045),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(31, 100, 31, 100),
         child: Column(
