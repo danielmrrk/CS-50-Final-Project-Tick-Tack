@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac/main_sceen/difficulty.dart';
 
 class DifficultyItem extends StatefulWidget {
   const DifficultyItem({
@@ -10,6 +11,7 @@ class DifficultyItem extends StatefulWidget {
     required this.deactivateSelection,
     required this.deactivate,
     required this.isDarkened,
+    required this.difficultyDisplay,
   });
 
   final bool? leftSide;
@@ -19,12 +21,13 @@ class DifficultyItem extends StatefulWidget {
   final Function(bool selected) deactivateSelection;
   final bool deactivate;
   final bool isDarkened;
+  final Difficulty difficultyDisplay;
 
   @override
   State<DifficultyItem> createState() => _DifficultyItemState();
 }
 
-class _DifficultyItemState extends State<DifficultyItem> {
+class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStateMixin {
   bool selected = false;
   bool mainSelect = false;
 
@@ -76,12 +79,12 @@ class _DifficultyItemState extends State<DifficultyItem> {
             child: Image(
               image: AssetImage(
                 selected
-                    ? "assets/edited_drunkard_2.png"
+                    ? "assets/edited_${widget.difficultyDisplay.technicalName}.png"
                     : widget.isDarkened
-                        ? "assets/grey_drunkard.png"
-                        : "assets/drunkard.png",
+                        ? "assets/grey_${widget.difficultyDisplay.technicalName}.png"
+                        : "assets/${widget.difficultyDisplay.technicalName}.png",
               ),
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
             ),
           ),
         ),

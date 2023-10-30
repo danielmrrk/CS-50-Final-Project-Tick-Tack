@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_item.dart';
 
 class DifficultyGrid extends StatefulWidget {
@@ -26,6 +27,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
             deactivateSelection: deactivateSelection,
             deactivate: deactivatedStatus,
             isDarkened: isDarkened,
+            difficultyDisplay: Difficulty.drunkard,
           ),
           DifficultyItem(
             rightSide: true,
@@ -33,6 +35,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
             deactivateSelection: deactivateSelection,
             deactivate: deactivatedStatus,
             isDarkened: isDarkened,
+            difficultyDisplay: Difficulty.novice,
           ),
           DifficultyItem(
             leftSide: true,
@@ -40,6 +43,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
             deactivateSelection: deactivateSelection,
             deactivate: deactivatedStatus,
             isDarkened: isDarkened,
+            difficultyDisplay: Difficulty.whiteKnight,
           ),
           DifficultyItem(
             rightSide: true,
@@ -47,6 +51,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
             deactivateSelection: deactivateSelection,
             deactivate: deactivatedStatus,
             isDarkened: isDarkened,
+            difficultyDisplay: Difficulty.darkWizard,
           )
         ],
       ),
@@ -63,4 +68,8 @@ class _DifficultyGridState extends State<DifficultyGrid> {
       }
     });
   }
+
+  // void setFocus(String difficultyName) {
+  //   if ()
+  // }
 }
