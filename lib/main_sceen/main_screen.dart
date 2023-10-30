@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty_grid.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,8 +20,10 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Choose your difficulty",
-                style: GoogleFonts.bebasNeue(fontSize: 36, color: const Color(0xffB552DE), fontWeight: FontWeight.w400)),
+            Text(
+              "Choose your difficulty",
+              style: TTTextTheme.strikingTitle,
+            ),
             const SizedBox(height: 20),
             const DifficultyGrid(),
             const SizedBox(height: 30),

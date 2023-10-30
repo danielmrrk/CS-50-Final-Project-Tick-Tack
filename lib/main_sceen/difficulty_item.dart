@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 
 class DifficultyItem extends StatefulWidget {
@@ -68,16 +69,22 @@ class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStat
                   width: widget.difficultyDisplay.focused ? 4 : 2,
                   strokeAlign: -1),
             ),
-            child: Image(
-              image: AssetImage(
-                widget.difficultyDisplay.focused
-                    ? "assets/edited_${widget.difficultyDisplay.technicalName}.png"
-                    : widget.maybeDarken
-                        ? "assets/grey_${widget.difficultyDisplay.technicalName}.png"
-                        : "assets/${widget.difficultyDisplay.technicalName}.png",
+            child: Stack(children: [
+              Image(
+                image: AssetImage(
+                  widget.difficultyDisplay.focused
+                      ? "assets/edited_${widget.difficultyDisplay.technicalName}.png"
+                      : widget.maybeDarken
+                          ? "assets/grey_${widget.difficultyDisplay.technicalName}.png"
+                          : "assets/${widget.difficultyDisplay.technicalName}.png",
+                ),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover,
-            ),
+              const Spacer(
+                flex: 1,
+              ),
+              StrokeText(text: widget.difficultyDisplay.displayName).body!,
+            ]),
           ),
         ),
       ),
