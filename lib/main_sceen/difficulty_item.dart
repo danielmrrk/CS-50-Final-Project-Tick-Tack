@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DifficultyItem extends StatefulWidget {
   const DifficultyItem({
     super.key,
-    this.leftSide,
-    this.rightSide,
-    this.upSide,
-    this.downSide,
     required this.setFocus,
     required this.maybeDarken,
     required this.difficultyDisplay,
   });
 
-  final bool? leftSide;
-  final bool? rightSide;
-  final bool? downSide;
-  final bool? upSide;
   final Function(String difficultyName) setFocus;
   final bool maybeDarken;
   final Difficulty difficultyDisplay;
