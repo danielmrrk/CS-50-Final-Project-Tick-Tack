@@ -80,9 +80,6 @@ class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStat
                 ),
                 fit: BoxFit.cover,
               ),
-              const Spacer(
-                flex: 1,
-              ),
               StrokeText(text: widget.difficultyDisplay.displayName).body!,
             ]),
           ),
