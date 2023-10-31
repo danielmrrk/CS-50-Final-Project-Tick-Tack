@@ -25,19 +25,22 @@ class TTTextTheme {
 
 class StrokeText {
   StrokeText({required this.text, this.body}) {
-    body = Stack(
-      children: [
-        Text(
-          text,
-          style: TTTextTheme.strokeBody,
-        ),
-        Text(
-          text,
-          style: TTTextTheme.bodyLarge,
-        )
-      ],
+    body = Align(
+      alignment: Alignment.center,
+      child: Stack(
+        children: [
+          Text(
+            text,
+            style: TTTextTheme.strokeBody,
+          ),
+          Text(
+            text,
+            style: TTTextTheme.bodyLarge,
+          )
+        ],
+      ),
     );
   }
   final String text;
-  Stack? body;
+  Widget? body;
 }

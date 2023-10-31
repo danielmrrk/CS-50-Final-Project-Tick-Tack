@@ -56,7 +56,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
 
   void setFocus(String difficultyName) {
     setState(() {
-      for (Difficulty rank in Difficulty.rank) {
+      for (Difficulty rank in Difficulty.ranks) {
         if (rank.displayName == difficultyName) {
           rank.focused = !rank.focused;
           _maybeDarken = rank.focused;
