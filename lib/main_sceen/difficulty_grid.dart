@@ -22,29 +22,21 @@ class _DifficultyGridState extends State<DifficultyGrid> {
         childAspectRatio: 164 / 188,
         children: [
           DifficultyItem(
-            leftSide: true,
-            upSide: true,
             setFocus: setFocus,
             maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.drunkard,
           ),
           DifficultyItem(
-            rightSide: true,
-            upSide: true,
             setFocus: setFocus,
             maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.novice,
           ),
           DifficultyItem(
-            leftSide: true,
-            downSide: true,
             setFocus: setFocus,
             maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.whiteKnight,
           ),
           DifficultyItem(
-            rightSide: true,
-            downSide: true,
             setFocus: setFocus,
             maybeDarken: _maybeDarken,
             difficultyDisplay: Difficulty.darkWizard,
@@ -56,7 +48,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
 
   void setFocus(String difficultyName) {
     setState(() {
-      for (Difficulty rank in Difficulty.rank) {
+      for (Difficulty rank in Difficulty.ranks) {
         if (rank.displayName == difficultyName) {
           rank.focused = !rank.focused;
           _maybeDarken = rank.focused;
