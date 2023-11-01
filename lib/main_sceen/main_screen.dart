@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac/game/game_screen.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
+import 'package:tic_tac/general/theme/util/navigation.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
+import 'package:tic_tac/general/theme/util/snackbar.dart';
+import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_grid.dart';
 
 final images = [
@@ -26,6 +30,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
+  Difficulty? _selectedDifficulty;
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -68,15 +73,25 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               style: TTTextTheme.strikingTitle,
             ),
             const SizedBox(height: 20),
-            const DifficultyGrid(),
+            DifficultyGrid(
+              setSelectedDifficulty: setSelectedDifficulty,
+            ),
             const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(
                 children: [
-                  const TTButton(title: "New Game").fullWidthButton,
+                  const TTButton(title: "New Game").fullWidthButton(
+                    () {
+                      if (_selectedDifficulty == null) {
+                        showSnackbar(context, "Please select a difficulty", 600);
+                        return;
+                      }
+                      navigateTo(GameScreen(difficultyDisplay: _selectedDifficulty!), context);
+                    },
+                  ),
                   const SizedBox(height: 8),
-                  const TTButton(title: "Stats & Challenges").fullWidthButton,
+                  const TTButton(title: "Stats & Challenges").fullWidthButton(() {}),
                 ],
               ),
             )
@@ -84,5 +99,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  void setSelectedDifficulty(Difficulty rank) {
+    _selectedDifficulty = rank.focused ? rank : null;
   }
 }

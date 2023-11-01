@@ -13,11 +13,11 @@ class TTButton {
   const TTButton({required this.title});
   final String title;
 
-  Widget get fullWidthButton => SizedBox(
+  Widget fullWidthButton(onPressed) => SizedBox(
         height: 56,
         width: double.infinity,
         child: FilledButton(
-          onPressed: () {},
+          onPressed: onPressed,
           style: TTButtonStyle.fullWidthButtonStyle,
           child: Text(
             title,

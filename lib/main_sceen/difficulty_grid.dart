@@ -3,7 +3,9 @@ import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_item.dart';
 
 class DifficultyGrid extends StatefulWidget {
-  const DifficultyGrid({super.key});
+  const DifficultyGrid({super.key, required this.setSelectedDifficulty});
+
+  final Function(Difficulty rank) setSelectedDifficulty;
 
   @override
   State<DifficultyGrid> createState() => _DifficultyGridState();
@@ -11,7 +13,6 @@ class DifficultyGrid extends StatefulWidget {
 
 class _DifficultyGridState extends State<DifficultyGrid> {
   bool _maybeDarken = false;
-  Difficulty? _selectedDifficulty;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -52,7 +53,7 @@ class _DifficultyGridState extends State<DifficultyGrid> {
         if (rank.displayName == difficultyName) {
           rank.focused = !rank.focused;
           _maybeDarken = rank.focused;
-          _selectedDifficulty = rank.focused ? rank : null;
+          widget.setSelectedDifficulty(rank);
         } else {
           rank.focused = false;
         }

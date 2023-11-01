@@ -16,9 +16,30 @@ class TTTextTheme {
         ..strokeWidth = 2
         ..color = Colors.black);
 
-  static final bodyLarge = GoogleFonts.montserrat(
+  static final bodyLargeBold = GoogleFonts.montserrat(
     fontSize: 18,
     fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  static final bodyLargeSemiBold = GoogleFonts.montserrat(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    letterSpacing: -0.2,
+    height: 1,
+  );
+
+  static final bodyMediumSemiBold = GoogleFonts.montserrat(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+
+  static final bodyMedium = GoogleFonts.montserrat(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
     color: Colors.white,
   );
 }
@@ -35,7 +56,7 @@ class StrokeText {
           ),
           Text(
             text,
-            style: TTTextTheme.bodyLarge,
+            style: TTTextTheme.bodyLargeBold,
           )
         ],
       ),
