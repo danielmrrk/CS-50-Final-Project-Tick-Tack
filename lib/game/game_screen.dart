@@ -3,8 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:tic_tac/game/speech_bubble.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
-import 'package:tic_tac/general/theme/text_theme.dart';
-import 'package:tic_tac/general/theme/util/triangle.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_card.dart';
 
@@ -21,8 +19,9 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(children: [
+      appBar: AppBar(),
+      body: Column(
+        children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: Row(
@@ -38,7 +37,33 @@ class _GameScreenState extends State<GameScreen> {
                 const SpeechBubble(dialogue: "Who dares to challenge me. Bring it on!"),
               ],
             ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(44),
+              child: Container(
+                color: TTColorTheme.onBackground,
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  clipBehavior: Clip.hardEdge,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: List.generate(
+                    9,
+                    (index) => GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        color: TTColorTheme.background,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           )
-        ]));
+        ],
+      ),
+    );
   }
 }
