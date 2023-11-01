@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
-import 'package:tic_tac/general/theme/util/triangle.dart';
+import 'package:tic_tac/general/util/triangle.dart';
 
 class SpeechBubble extends StatelessWidget {
   const SpeechBubble({super.key, required this.dialogue});

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
+import 'package:get/get.dart';
+import 'package:tic_tac/general/theme/text_theme.dart';
+import 'package:tic_tac/general/util/navigation.dart';
+import 'package:tic_tac/main_sceen/main_screen.dart';
 
 class GameField extends StatefulWidget {
   const GameField({super.key, required this.resetTimer, required this.cancelTimer});
@@ -44,10 +49,32 @@ class _GameFieldState extends State<GameField> {
               _onMovePlaced(row, col);
               if (_checkWin(board, currentPlayer)) {
                 widget.cancelTimer();
-                print("Won");
+                Get.defaultDialog(
+                    title: "Triumph is yours. A well deserved victory!",
+                    titleStyle: TTTextTheme.bodyLarge,
+                    titlePadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                    // TODO: custom: ,
+                    content: Container(
+                      width: 272,
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      child: Column(
+                        children: [
+                          const TTButton(title: "New Game").fullWidthButton(() {
+                            navigateTo(
+                                const MainScreen(
+                                  reset: true,
+                                ),
+                                context);
+                          }),
+                          const SizedBox(height: 8),
+                          const TTButton(title: "Statistics").fullWidthButton(() {})
+                        ],
+                      ),
+                    ),
+                    backgroundColor: TTColorTheme.background.withOpacity(0.95));
               } else if (moves == 9) {
                 widget.cancelTimer();
-                print("Draw");
+                Get.defaultDialog(title: "Getting a draw is\nsometimes the best!", backgroundColor: TTColorTheme.onBackground);
               }
             },
             child: Container(

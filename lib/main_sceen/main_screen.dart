@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/game/game_screen.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
-import 'package:tic_tac/general/theme/util/navigation.dart';
+import 'package:tic_tac/general/util/navigation.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
-import 'package:tic_tac/general/theme/util/snackbar.dart';
+import 'package:tic_tac/general/util/snackbar.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_grid.dart';
 
@@ -23,7 +23,9 @@ final images = [
 ];
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.reset = false});
+
+  final bool reset;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -31,10 +33,13 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Difficulty? _selectedDifficulty;
+  late bool _reset;
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     precache();
+    _reset = widget.reset;
     super.initState();
   }
 
@@ -62,6 +67,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    if (_reset) {
+      for (var rank in Difficulty.ranks) {
+        rank.focused = false;
+      }
+      _reset = false;
+    }
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(31, 100, 31, 100),
