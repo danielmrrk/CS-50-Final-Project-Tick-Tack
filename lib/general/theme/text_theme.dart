@@ -42,6 +42,18 @@ class TTTextTheme {
     fontWeight: FontWeight.w500,
     color: Colors.white,
   );
+
+  static final bodyExtraLarge = GoogleFonts.montserrat(
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  );
+
+  static final bodyLarge = GoogleFonts.montserrat(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  );
 }
 
 class StrokeText {
