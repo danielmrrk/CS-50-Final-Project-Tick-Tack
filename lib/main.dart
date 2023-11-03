@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
+import 'package:tic_tac/service/tic_tac_toe_model_service.dart';
 
 void main() {
-  runApp(const TicTacApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  TicTacToeModelService.loadQValues();
+  runApp(const ProviderScope(child: TicTacApp()));
 }
 
 class TicTacApp extends StatelessWidget {

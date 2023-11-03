@@ -95,10 +95,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   const TTButton(title: "New Game").fullWidthButton(
                     () {
                       if (_selectedDifficulty == null) {
-                        showSnackbar(context, "Please select a difficulty", 600);
+                        showSimpleGetSnackbar("Please select a difficulty", 3);
                         return;
                       }
-                      navigateTo(GameScreen(difficultyDisplay: _selectedDifficulty!), context);
+                      navigateGetTo(GameScreen(difficultyDisplay: _selectedDifficulty!));
                     },
                   ),
                   const SizedBox(height: 8),

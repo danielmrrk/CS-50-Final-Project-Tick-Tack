@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-void navigateTo(Widget screen, BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: ((context) => screen)),
-  );
+void navigateGetTo(Widget screen) {
+  Get.to(screen);
 }
