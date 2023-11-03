@@ -1,15 +1,55 @@
+import "dart:async";
+
+import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
+import "package:tic_tac/main_sceen/difficulty.dart";
 import 'package:tic_tac/service/model_service.dart';
 
-final gameProvider = StateNotifierProvider<GameProvider, Map<String, dynamic>>((ref) => GameProvider());
+final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
 
-final gameService = GameProvider();
+// the time depends on the difficulty!
+class TimeService extends StateNotifier<int?> {
+  TimeService() : super(null);
+  static late Timer _timer;
 
-class GameProvider extends StateNotifier<Map<String, dynamic>> {
-  GameProvider()
+  void startTimer(Difficulty difficultyDisplay, BuildContext context) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      resetTimer(difficultyDisplay);
+      if (state != null) {
+        if (state! > 1) {
+          state = state! - 1;
+        } else {
+          state = state! - 1;
+          if (context.mounted) {
+            CustomDialog.showUnclosableGetDialog(
+              "You lost on time. Good luck next time.",
+              CustomDialog.buildFixedGameDialogContent(),
+            );
+          }
+          timer.cancel();
+        }
+      }
+    });
+  }
+
+  void resetTimer(Difficulty difficultyDisplay) {
+    state = int.tryParse(difficultyDisplay.time);
+  }
+
+  static void cancelTimer() {
+    _timer.cancel();
+  }
+}
+
+final gameProvider = StateNotifierProvider<GameService, Map<String, dynamic>>((ref) => GameService());
+
+final gameService = GameService();
+
+class GameService extends StateNotifier<Map<String, dynamic>> {
+  GameService()
       : super({
           "board": List.generate(
             3,
@@ -21,14 +61,14 @@ class GameProvider extends StateNotifier<Map<String, dynamic>> {
 
   int _moves = 0;
 
-  bool onPlayerPlacedMove(int row, int col) {
+  bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
     _onMovePlaced(state["playerSymbol"], row, col);
-    if (_checkGameStatus(state["playerSymbol"])) {
+    if (_checkGameStatus(state["playerSymbol"], difficultyDisplay)) {
       return true;
     }
 
     _movePlacedByComp();
-    if (_checkGameStatus(state["compSymbol"])) {
+    if (_checkGameStatus(state["compSymbol"], difficultyDisplay)) {
       return true;
     }
     return false;
@@ -41,9 +81,9 @@ class GameProvider extends StateNotifier<Map<String, dynamic>> {
 
   List<List<String>> get board => state["board"];
 
-  bool _checkGameStatus(String currentPlayer) {
+  bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
     if (_checkWin(currentPlayer)) {
-      //widget.cancelTimer();
+      TimeService().resetTimer(difficultyDisplay);
       CustomDialog.showUnclosableGetDialog(
         currentPlayer == state["playerSymbol"]
             ? "Triumph is yours. A well deserved victory!"
@@ -52,7 +92,7 @@ class GameProvider extends StateNotifier<Map<String, dynamic>> {
       );
       return true;
     } else if (_moves == 9) {
-      //widget.cancelTimer();
+      TimeService.cancelTimer();
       CustomDialog.showUnclosableGetDialog(
         "Getting a draw is sometimes the best.",
         CustomDialog.buildFixedGameDialogContent(),

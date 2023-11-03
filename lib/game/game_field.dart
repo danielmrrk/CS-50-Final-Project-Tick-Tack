@@ -1,23 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:tic_tac/game/game_provider.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
-import 'package:tic_tac/general/util/array_position_2d.dart';
-import 'package:tic_tac/general/util/dialog.dart';
+import 'package:tic_tac/main_sceen/difficulty.dart';
 
 class GameField extends ConsumerStatefulWidget {
   const GameField({
     super.key,
-    required this.resetTimer,
-    required this.cancelTimer,
+    required this.difficultyDisplay,
   });
 
-  final Function resetTimer;
-  final Function cancelTimer;
+  final Difficulty difficultyDisplay;
 
   @override
   ConsumerState<GameField> createState() => _GameFieldState();
@@ -48,7 +43,7 @@ class _GameFieldState extends ConsumerState<GameField> {
           return GestureDetector(
             onTap: () {
               if (!_isOver) {
-                _isOver = gameService.onPlayerPlacedMove(row, col);
+                _isOver = gameService.onPlayerPlacedMove(row, col, widget.difficultyDisplay);
                 setState(() {});
               }
             },

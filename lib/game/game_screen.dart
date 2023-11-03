@@ -1,13 +1,12 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:tic_tac/game/game_field.dart';
 import 'package:tic_tac/game/game_provider.dart';
 import 'package:tic_tac/game/speech_bubble.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
-import 'package:tic_tac/general/util/dialog.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_card.dart';
 
@@ -22,27 +21,25 @@ class GameScreen extends ConsumerStatefulWidget {
 
 class _GameScreenState extends ConsumerState<GameScreen> {
   int? _start;
-  Timer? _timer;
+  // Timer? _timer;
 
   @override
   void initState() {
-    _start = int.tryParse(widget.difficultyDisplay.time);
-    if (_start != null) {
-      _startTimer();
-    }
     super.initState();
   }
 
-  @override
-  void dispose() {
-    if (_timer != null) {
-      _timer!.cancel();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   if (_timer != null) {
+  //     _timer!.cancel();
+  //   }
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    ref.read(timeProvider.notifier).startTimer(widget.difficultyDisplay, context);
+    _start = ref.watch(timeProvider);
     return Scaffold(
       body: Column(
         children: [
@@ -64,8 +61,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           ),
           Expanded(
             child: GameField(
-              resetTimer: _resetTimer,
-              cancelTimer: _cancelTimer,
+              difficultyDisplay: widget.difficultyDisplay,
             ),
           ),
           const SizedBox(height: 60),
@@ -111,38 +107,5 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         ],
       ),
     );
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_start == null) {
-        throw Exception("The starter value shouldn't be null");
-      }
-      setState(() {
-        if (_start! > 1) {
-          _start = _start! - 1;
-        } else {
-          _start = _start! - 1;
-          // mounted is here always true!!! keep in mind!
-          if (!mounted) {
-            CustomDialog.showUnclosableGetDialog(
-              "You lost on time. Good luck next time.",
-              CustomDialog.buildFixedGameDialogContent(),
-            );
-          }
-          timer.cancel();
-        }
-      });
-    });
-  }
-
-  void _resetTimer() {
-    setState(() {
-      _start = int.tryParse(widget.difficultyDisplay.time);
-    });
-  }
-
-  void _cancelTimer() {
-    _timer?.cancel();
   }
 }
