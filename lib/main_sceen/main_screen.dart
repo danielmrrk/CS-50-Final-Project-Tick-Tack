@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tic_tac/game/game_screen.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
-import 'package:tic_tac/general/util/navigation.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/general/util/snackbar.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
@@ -98,7 +98,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                         showSimpleGetSnackbar("Please select a difficulty", 3);
                         return;
                       }
-                      navigateGetTo(GameScreen(difficultyDisplay: _selectedDifficulty!));
+                      Get.to(() => GameScreen(difficultyDisplay: _selectedDifficulty!));
                     },
                   ),
                   const SizedBox(height: 8),

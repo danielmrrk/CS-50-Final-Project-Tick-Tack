@@ -123,11 +123,13 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           _start = _start! - 1;
         } else {
           _start = _start! - 1;
-          ref.read(gameProvider.notifier).clear();
-          CustomDialog.showUnclosableGetDialog(
-            "You lost on time. Good luck next time.",
-            CustomDialog.buildFixedGameDialogContent(),
-          );
+          // mounted is here always true!!! keep in mind!
+          if (!mounted) {
+            CustomDialog.showUnclosableGetDialog(
+              "You lost on time. Good luck next time.",
+              CustomDialog.buildFixedGameDialogContent(),
+            );
+          }
           timer.cancel();
         }
       });

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
-import 'package:tic_tac/service/tic_tac_toe_model_service.dart';
+import 'package:tic_tac/service/model_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

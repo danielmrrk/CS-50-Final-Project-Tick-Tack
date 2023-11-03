@@ -1,12 +1,12 @@
-import "dart:ui";
-
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
-import "package:tic_tac/service/tic_tac_toe_model_service.dart";
+import 'package:tic_tac/service/model_service.dart';
 
 final gameProvider = StateNotifierProvider<GameProvider, Map<String, dynamic>>((ref) => GameProvider());
+
+final gameService = GameProvider();
 
 class GameProvider extends StateNotifier<Map<String, dynamic>> {
   GameProvider()
@@ -24,13 +24,11 @@ class GameProvider extends StateNotifier<Map<String, dynamic>> {
   bool onPlayerPlacedMove(int row, int col) {
     _onMovePlaced(state["playerSymbol"], row, col);
     if (_checkGameStatus(state["playerSymbol"])) {
-      clear();
       return true;
     }
 
     _movePlacedByComp();
-    if (_checkGameStatus(state["playerSymbol"])) {
-      clear();
+    if (_checkGameStatus(state["compSymbol"])) {
       return true;
     }
     return false;
@@ -95,14 +93,10 @@ class GameProvider extends StateNotifier<Map<String, dynamic>> {
 
   void _movePlacedByComp() {
     try {
-      if (TicTacToeModelService.qValuesMap == null) {
-        showSimpleGetSnackbar("Model not loaded", 2);
-      } else {
-        ArrayPosition2D position = ArrayPosition2D.argmax(
-          TicTacToeModelService.qValuesMap!["${state["board"]}/${state["compSymbol"]}"],
-        );
-        _onMovePlaced(state["compSymbol"], position.row, position.col);
-      }
+      ArrayPosition2D position = ArrayPosition2D.argmax(
+        TicTacToeModelService.qValuesMap!["${state["board"]}/${state["compSymbol"]}"],
+      );
+      _onMovePlaced(state["compSymbol"], position.row, position.col);
     } catch (e) {
       showSimpleGetSnackbar("Sorry. Try restarting the app.", 3);
     }
