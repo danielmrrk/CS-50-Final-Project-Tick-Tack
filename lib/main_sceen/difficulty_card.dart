@@ -28,7 +28,7 @@ class SimpleDifficultyCard extends StatelessWidget {
           side: BorderSide(color: strokeColor, width: 4, strokeAlign: -1),
         ),
         child: Image(
-          image: AssetImage("assets/edited_${difficultyDisplay.technicalName}.png"),
+          image: AssetImage("assets/images/edited_${difficultyDisplay.technicalName}.png"),
           fit: BoxFit.cover,
         ),
       ),

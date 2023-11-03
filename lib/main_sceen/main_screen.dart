@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void precache() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       for (var image in images) {
-        precacheImage(AssetImage("assets/$image"), context);
+        precacheImage(AssetImage("assets/images/$image"), context);
       }
     });
   }

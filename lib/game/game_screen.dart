@@ -35,7 +35,6 @@ class _GameScreenState extends State<GameScreen> {
     if (_timer != null) {
       _timer!.cancel();
     }
-    ;
     super.dispose();
   }
 
@@ -97,7 +96,7 @@ class _GameScreenState extends State<GameScreen> {
                     borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
                     color: TTColorTheme.onBackground,
                   ),
-                  child: SvgPicture.asset("assets/white_flag.svg"),
+                  child: SvgPicture.asset("assets/images/white_flag.svg"),
                 ),
                 onTap: () {},
               )
@@ -127,17 +126,12 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _resetTimer() {
-    if (_timer != null) {
-      setState(() {
-        _timer!.cancel;
-        _start = int.tryParse(widget.difficultyDisplay.time);
-      });
-    }
+    setState(() {
+      _start = int.tryParse(widget.difficultyDisplay.time);
+    });
   }
 
   void _cancelTimer() {
-    if (_timer != null) {
-      _timer!.cancel;
-    }
+    _timer?.cancel();
   }
 }
