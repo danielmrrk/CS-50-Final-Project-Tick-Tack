@@ -159,23 +159,7 @@ class _GameFieldState extends State<GameField> {
   }
 
   void _movePlacedByComp() {
-    ArrayPosition2D position = _argmax(_qValuesMap["$_board/$_computerSymbol"]);
+    ArrayPosition2D position = ArrayPosition2D.argmax(_qValuesMap["$_board/$_computerSymbol"]);
     _onMovePlaced(position.row, position.col);
-  }
-
-  ArrayPosition2D _argmax(List<dynamic> qValues) {
-    int row = 0;
-    int col = 0;
-    double maxValue = qValues[row][col];
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (qValues[i][j] > maxValue) {
-          row = i;
-          col = j;
-          maxValue = qValues[i][j];
-        }
-      }
-    }
-    return ArrayPosition2D(row: row, col: col);
   }
 }
