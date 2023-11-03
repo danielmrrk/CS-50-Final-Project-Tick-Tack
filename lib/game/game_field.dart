@@ -11,7 +11,11 @@ import 'package:tic_tac/general/util/navigation.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
 
 class GameField extends StatefulWidget {
-  const GameField({super.key, required this.resetTimer, required this.cancelTimer});
+  const GameField({
+    super.key,
+    required this.resetTimer,
+    required this.cancelTimer,
+  });
 
   final Function resetTimer;
   final Function cancelTimer;
@@ -70,34 +74,14 @@ class _GameFieldState extends State<GameField> {
             onTap: () {
               if (!_isOver) {
                 _moves++;
-                List<List<String>> board = _board;
-                String currentPlayer = _currentPlayer;
-                if (currentPlayer == _playerSymbol) {
-                  _onMovePlaced(row, col);
-                } else {
-                  _movePlacedByComp();
-                }
-                if (_moves >= 3) {
-                  if (_checkWin(board, currentPlayer)) {
-                    widget.cancelTimer();
-                    _isOver = true;
-                    showGetDialog(
-                      currentPlayer == _playerSymbol
-                          ? "Triumph is yours. A well deserved victory!"
-                          : "What an unfortunate loss. Good luck next time!",
-                      dialogContent,
-                      context,
-                    );
-                  } else if (_moves == 9) {
-                    widget.cancelTimer();
-                    showGetDialog(
-                      "Getting a draw is sometimes the best!",
-                      dialogContent,
-                      context,
-                    );
-                    _isOver = true;
-                  }
-                }
+                _onMovePlaced(row, col);
+
+                _isOver = _checkGameStatus(_board, _playerSymbol, dialogContent);
+                if (_isOver) return;
+
+                _moves++;
+                _movePlacedByComp();
+                _isOver = _checkGameStatus(_board, _computerSymbol, dialogContent);
               }
             },
             child: Container(
@@ -105,7 +89,7 @@ class _GameFieldState extends State<GameField> {
               color: TTColorTheme.background,
               child: _board[row][col] != "' '"
                   ? SvgPicture.asset(
-                      "assets/images/$_currentPlayer.svg",
+                      "assets/images/${_board[row][col].replaceAll("'", "")}.svg",
                     )
                   : null,
             ),
@@ -128,19 +112,40 @@ class _GameFieldState extends State<GameField> {
 
   bool _checkWin(List<List<String>> board, String currentPlayer) {
     for (List<String> row in board) {
-      if (row.every((cell) => cell == currentPlayer)) {
+      if (row.every((cell) => cell.replaceAll("'", "") == currentPlayer)) {
         return true;
       }
     }
     for (int col = 0; col < 3; col++) {
-      if (board.every((row) => row[col] == currentPlayer)) {
+      if (board.every((row) => row[col].replaceAll("'", "") == currentPlayer)) {
         return true;
       }
     }
-    if ([0, 1, 2].every((i) => board[i][i] == currentPlayer) ||
+    if ([0, 1, 2].every((i) => board[i][i].replaceAll("'", "") == currentPlayer) ||
         [0, 1, 2].every(
-          (j) => board[2 - j][j] == currentPlayer,
+          (j) => board[2 - j][j].replaceAll("'", "") == currentPlayer,
         )) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _checkGameStatus(List<List<String>> board, String currentPlayer, Widget dialogContent) {
+    if (_checkWin(board, currentPlayer)) {
+      widget.cancelTimer();
+      showGetDialog(
+        currentPlayer == _playerSymbol ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
+        dialogContent,
+        context,
+      );
+      return true;
+    } else if (_moves == 9) {
+      widget.cancelTimer();
+      showGetDialog(
+        "Getting a draw is sometimes the best!",
+        dialogContent,
+        context,
+      );
       return true;
     }
     return false;
@@ -154,22 +159,17 @@ class _GameFieldState extends State<GameField> {
   }
 
   void _movePlacedByComp() {
-    // now compSymbol always the same later more specific!!!
-    String key = "$_board/$_computerSymbol";
-    print(_qValuesMap.keys.last);
-    print("key: $key");
-    print(_qValuesMap.values.first);
-    //ArrayPosition2D position = _argmax(_qValuesMap["$_board/$_computerSymbol"]);
-    //_onMovePlaced(position.row, position.col);
+    ArrayPosition2D position = _argmax(_qValuesMap["$_board/$_computerSymbol"]);
+    _onMovePlaced(position.row, position.col);
   }
 
-  ArrayPosition2D _argmax(List<List<double>> qValues) {
+  ArrayPosition2D _argmax(List<dynamic> qValues) {
     int row = 0;
     int col = 0;
     double maxValue = qValues[row][col];
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        if (qValues[row][col] > maxValue) {
+        if (qValues[i][j] > maxValue) {
           row = i;
           col = j;
           maxValue = qValues[i][j];

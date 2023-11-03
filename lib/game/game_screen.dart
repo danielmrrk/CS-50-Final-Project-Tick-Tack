@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tic_tac/game/game_field.dart';
 import 'package:tic_tac/game/speech_bubble.dart';
+import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
+import 'package:tic_tac/general/util/dialog.dart';
+import 'package:tic_tac/general/util/navigation.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_card.dart';
+import 'package:tic_tac/main_sceen/main_screen.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.difficultyDisplay});
@@ -116,9 +120,30 @@ class _GameScreenState extends State<GameScreen> {
         throw Exception("The starter value shouldn't be null");
       }
       setState(() {
-        if (_start! > 0) {
+        if (_start! > 1) {
           _start = _start! - 1;
         } else {
+          _start = _start! - 1;
+          showGetDialog(
+              "You lost on time. Good luck next time.",
+              Container(
+                width: 272,
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 20),
+                child: Column(
+                  children: [
+                    const TTButton(title: "New Game").fullWidthButton(() {
+                      navigateTo(
+                          const MainScreen(
+                            reset: true,
+                          ),
+                          context);
+                    }),
+                    const SizedBox(height: 8),
+                    const TTButton(title: "Statistics").fullWidthButton(() {})
+                  ],
+                ),
+              ),
+              context);
           timer.cancel();
         }
       });
