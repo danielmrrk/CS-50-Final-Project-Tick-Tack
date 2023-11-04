@@ -43,7 +43,7 @@ class CustomDialog {
         ),
       );
 
-  static void showUnclosableGetDialog(String title, Widget content) {
+  static void showGetDialog({required String title, required Widget content, bool closeable = false}) {
     Get.defaultDialog(
         title: title,
         titleStyle: TTTextTheme.bodyLarge,
@@ -51,7 +51,7 @@ class CustomDialog {
         custom: Container(color: Colors.white10),
         content: content,
         backgroundColor: TTColorTheme.background.withOpacity(0.95),
-        barrierDismissible: false,
-        onWillPop: () => Future.value(false));
+        barrierDismissible: closeable,
+        onWillPop: () => Future.value(closeable));
   }
 }

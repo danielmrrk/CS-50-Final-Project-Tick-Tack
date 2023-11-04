@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import 'package:tic_tac/game/game_field.dart';
 import 'package:tic_tac/game/game_provider.dart';
 import 'package:tic_tac/game/speech_bubble.dart';
+import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
+import 'package:tic_tac/general/util/dialog.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_card.dart';
+import 'package:tic_tac/main_sceen/main_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key, required this.difficultyDisplay});
@@ -87,7 +91,30 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   ),
                   child: SvgPicture.asset("assets/images/white_flag.svg"),
                 ),
-                onTap: () {},
+                onTap: () {
+                  CustomDialog.showGetDialog(
+                      title: "Do you really want to give up?",
+                      content: Container(
+                        width: 272,
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 20),
+                        child: Column(
+                          children: [
+                            const TTButton(title: "Yes").fullWidthButton(() {
+                              Get.to(
+                                () => const MainScreen(
+                                  reset: true,
+                                ),
+                              );
+                            }),
+                            const SizedBox(height: 8),
+                            const TTButton(title: "No").fullWidthButton(() {
+                              Get.back();
+                            })
+                          ],
+                        ),
+                      ),
+                      closeable: true);
+                },
               )
             ],
           ),

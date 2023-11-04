@@ -28,9 +28,9 @@ class TimeService extends StateNotifier<int?> {
           state = state! - 1;
         } else {
           state = state! - 1;
-          CustomDialog.showUnclosableGetDialog(
-            "You lost on time. Good luck next time.",
-            CustomDialog.buildFixedGameDialogContent(),
+          CustomDialog.showGetDialog(
+            title: "You lost on time. Good luck next time.",
+            content: CustomDialog.buildFixedGameDialogContent(),
           );
 
           timer.cancel();
@@ -101,16 +101,18 @@ class GameService extends StateNotifier<List<List<String>>> {
   bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
     if (_checkWin(currentPlayer)) {
       _timeService.cancelTimer();
-      CustomDialog.showUnclosableGetDialog(
-        currentPlayer == _playerSymbol ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
-        CustomDialog.buildFixedGameDialogContent(),
+      CustomDialog.showGetDialog(
+        title: currentPlayer == _playerSymbol
+            ? "Triumph is yours. A well deserved victory!"
+            : "What an unfortunate loss. Good luck next time!",
+        content: CustomDialog.buildFixedGameDialogContent(),
       );
       return true;
     } else if (_moves == 9) {
       _timeService.cancelTimer();
-      CustomDialog.showUnclosableGetDialog(
-        "Getting a draw is sometimes the best.",
-        CustomDialog.buildFixedGameDialogContent(),
+      CustomDialog.showGetDialog(
+        title: "Getting a draw is sometimes the best.",
+        content: CustomDialog.buildFixedGameDialogContent(),
       );
       return true;
     }
