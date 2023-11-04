@@ -11,7 +11,7 @@ import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/general/util/dialog.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
-import 'package:tic_tac/main_sceen/difficulty_card.dart';
+import 'package:tic_tac/game/difficulty_card.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -42,7 +42,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SimpleDifficultyCard(
+                DifficultyCard(
                   difficultyDisplay: widget.difficultyDisplay,
                   strokeColor: TTColorTheme.onBackground,
                   height: 180,
@@ -100,6 +100,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                         child: Column(
                           children: [
                             const TTButton(title: "Yes").fullWidthButton(() {
+                              ref.read(timeProvider.notifier).cancelTimer();
                               Get.to(
                                 () => const MainScreen(
                                   reset: true,

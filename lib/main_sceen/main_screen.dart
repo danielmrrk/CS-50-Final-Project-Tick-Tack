@@ -43,6 +43,10 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     precache();
     _reset = widget.reset;
     if (_reset) {
+      for (var rank in Difficulty.ranks) {
+        rank.focused = false;
+      }
+      _reset = false;
       ref.read(gameProvider.notifier).clear();
     }
     super.initState();
@@ -72,12 +76,6 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    if (_reset) {
-      for (var rank in Difficulty.ranks) {
-        rank.focused = false;
-      }
-      _reset = false;
-    }
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(31, 100, 31, 100),

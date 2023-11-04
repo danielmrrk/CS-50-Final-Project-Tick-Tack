@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 
-class SimpleDifficultyCard extends StatelessWidget {
-  const SimpleDifficultyCard({
+// used it primarly here for the game_screen
+class DifficultyCard extends StatelessWidget {
+  const DifficultyCard({
     super.key,
     required this.difficultyDisplay,
     required this.strokeColor,
