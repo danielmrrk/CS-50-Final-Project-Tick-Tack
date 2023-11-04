@@ -50,9 +50,9 @@ class _GameFieldState extends ConsumerState<GameField> {
             child: Container(
               padding: const EdgeInsets.all(20),
               color: TTColorTheme.background,
-              child: ref.watch(gameProvider.notifier).board[row][col] != "' '"
+              child: ref.watch(gameProvider)[row][col] != "' '"
                   ? SvgPicture.asset(
-                      "assets/images/${ref.watch(gameProvider.notifier).board[row][col].replaceAll("'", "")}.svg",
+                      "assets/images/${ref.watch(gameProvider)[row][col].replaceAll("'", "")}.svg",
                     )
                   : null,
             ),

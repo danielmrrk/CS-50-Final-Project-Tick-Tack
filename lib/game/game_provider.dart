@@ -1,6 +1,7 @@
 import "dart:async";
-
+import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
+
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
@@ -52,32 +53,32 @@ class TimeService extends StateNotifier<int?> {
   }
 }
 
-final gameProvider = StateNotifierProvider<GameService, Map<String, dynamic>>((ref) {
+final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref) {
   return GameService(ref.read(timeProvider.notifier));
 });
 
-class GameService extends StateNotifier<Map<String, dynamic>> {
+class GameService extends StateNotifier<List<List<String>>> {
   GameService(this._timeService)
-      : super({
-          "board": List.generate(
+      : super(
+          List.generate(
             3,
             (index) => List.generate(3, (index) => "' '"),
           ),
-          "compSymbol": "O",
-          "playerSymbol": "X"
-        });
+        );
 
   int _moves = 0;
+  String compSymbol = "O";
+  String playerSymbol = "X";
   final TimeService _timeService;
 
   bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
-    _onMovePlaced(state["playerSymbol"], row, col);
-    if (_checkGameStatus(state["playerSymbol"], difficultyDisplay)) {
+    _onMovePlaced(playerSymbol, row, col);
+    if (_checkGameStatus(playerSymbol, difficultyDisplay)) {
       return true;
     }
 
     _movePlacedByComp();
-    if (_checkGameStatus(state["compSymbol"], difficultyDisplay)) {
+    if (_checkGameStatus(compSymbol, difficultyDisplay)) {
       return true;
     }
     _timeService.resetTimer(difficultyDisplay);
@@ -85,19 +86,17 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
   }
 
   void clear() {
-    state["board"] = List.generate(3, (index) => List.generate(3, (index) => "' '"));
-    _moves = 0;
+    Future.microtask(() {
+      state = List.generate(3, (index) => List.generate(3, (index) => "' '"));
+      _moves = 0;
+    });
   }
-
-  List<List<String>> get board => state["board"];
 
   bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
     if (_checkWin(currentPlayer)) {
-      _timeService.resetTimer(difficultyDisplay);
+      _timeService.cancelTimer();
       CustomDialog.showUnclosableGetDialog(
-        currentPlayer == state["playerSymbol"]
-            ? "Triumph is yours. A well deserved victory!"
-            : "What an unfortunate loss. Good luck next time!",
+        currentPlayer == playerSymbol ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         CustomDialog.buildFixedGameDialogContent(),
       );
       return true;
@@ -113,19 +112,19 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
   }
 
   bool _checkWin(String currentPlayer) {
-    for (List<String> row in state["board"]) {
+    for (List<String> row in state) {
       if (row.every((cell) => cell.replaceAll("'", "") == currentPlayer)) {
         return true;
       }
     }
     for (int col = 0; col < 3; col++) {
-      if (state["board"].every((row) => row[col].replaceAll("'", "") == currentPlayer)) {
+      if (state.every((row) => row[col].replaceAll("'", "") == currentPlayer)) {
         return true;
       }
     }
-    if ([0, 1, 2].every((i) => state["board"][i][i].replaceAll("'", "") == currentPlayer) ||
+    if ([0, 1, 2].every((i) => state[i][i].replaceAll("'", "") == currentPlayer) ||
         [0, 1, 2].every(
-          (j) => state["board"][2 - j][j].replaceAll("'", "") == currentPlayer,
+          (j) => state[2 - j][j].replaceAll("'", "") == currentPlayer,
         )) {
       return true;
     }
@@ -133,21 +132,24 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
   }
 
   void _onMovePlaced(String currentPlayer, int row, int col) {
-    if (state["board"][row][col] != "' '") {
+    if (state[row][col] != "' '") {
       return;
     }
     _moves++;
-    state["board"][row][col] = "'$currentPlayer'";
+    state[row][col] = "'$currentPlayer'";
   }
 
   void _movePlacedByComp() {
     try {
       ArrayPosition2D position = ArrayPosition2D.argmax(
-        TicTacToeModelService.qValuesMap!["${state["board"]}/${state["compSymbol"]}"],
+        TicTacToeModelService.qValuesMap!["$state/$compSymbol"],
       );
-      _onMovePlaced(state["compSymbol"], position.row, position.col);
+      _onMovePlaced(compSymbol, position.row, position.col);
     } catch (e) {
-      showSimpleGetSnackbar("Sorry. Try restarting the app.", 3);
+      if (e is NoSuchMethodError) {
+        showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
+      }
+      return;
     }
   }
 }
