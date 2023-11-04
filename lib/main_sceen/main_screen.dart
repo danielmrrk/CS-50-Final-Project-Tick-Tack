@@ -42,6 +42,9 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
     WidgetsBinding.instance.addObserver(this);
     precache();
     _reset = widget.reset;
+    if (_reset) {
+      ref.read(gameProvider.notifier).clear();
+    }
     super.initState();
   }
 
@@ -100,7 +103,9 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
                         showSimpleGetSnackbar("Please select a difficulty", 3);
                         return;
                       }
+
                       ref.read(timeProvider.notifier).startTimer(_selectedDifficulty!);
+
                       Get.to(() => GameScreen(difficultyDisplay: _selectedDifficulty!));
                     },
                   ),

@@ -1,6 +1,5 @@
 import "dart:async";
 
-import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
@@ -9,9 +8,6 @@ import "package:tic_tac/main_sceen/difficulty.dart";
 import 'package:tic_tac/service/model_service.dart';
 
 final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
-
-// the time depends on the difficulty!
-//final timeService = TimeService();
 
 class TimeService extends StateNotifier<int?> {
   TimeService() : super(null);
@@ -143,7 +139,6 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
     _moves++;
     state["board"][row][col] = "'$currentPlayer'";
   }
-  //widget.resetTimer();
 
   void _movePlacedByComp() {
     try {
