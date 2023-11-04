@@ -21,24 +21,14 @@ class GameScreen extends ConsumerStatefulWidget {
 
 class _GameScreenState extends ConsumerState<GameScreen> {
   int? _start;
-  // Timer? _timer;
 
   @override
   void initState() {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   if (_timer != null) {
-  //     _timer!.cancel();
-  //   }
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
-    ref.read(timeProvider.notifier).startTimer(widget.difficultyDisplay, context);
     _start = ref.watch(timeProvider);
     return Scaffold(
       body: Column(

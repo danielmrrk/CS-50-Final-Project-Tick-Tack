@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:tic_tac/game/game_provider.dart';
 import 'package:tic_tac/game/game_screen.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
@@ -22,16 +24,16 @@ final images = [
   "edited_dark wizard.png"
 ];
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key, this.reset = false});
 
   final bool reset;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
+class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObserver {
   Difficulty? _selectedDifficulty;
   late bool _reset;
 
@@ -98,6 +100,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                         showSimpleGetSnackbar("Please select a difficulty", 3);
                         return;
                       }
+                      ref.read(timeProvider.notifier).startTimer(_selectedDifficulty!);
                       Get.to(() => GameScreen(difficultyDisplay: _selectedDifficulty!));
                     },
                   ),

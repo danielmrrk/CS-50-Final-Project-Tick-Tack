@@ -11,24 +11,35 @@ import 'package:tic_tac/service/model_service.dart';
 final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
 
 // the time depends on the difficulty!
+//final timeService = TimeService();
+
 class TimeService extends StateNotifier<int?> {
   TimeService() : super(null);
-  static late Timer _timer;
+  Timer? _timer;
 
-  void startTimer(Difficulty difficultyDisplay, BuildContext context) {
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  int? getTime() {
+    return state;
+  }
+
+  void startTimer(Difficulty difficultyDisplay) {
+    state = int.tryParse(difficultyDisplay.time);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      resetTimer(difficultyDisplay);
       if (state != null) {
         if (state! > 1) {
           state = state! - 1;
         } else {
           state = state! - 1;
-          if (context.mounted) {
-            CustomDialog.showUnclosableGetDialog(
-              "You lost on time. Good luck next time.",
-              CustomDialog.buildFixedGameDialogContent(),
-            );
-          }
+          CustomDialog.showUnclosableGetDialog(
+            "You lost on time. Good luck next time.",
+            CustomDialog.buildFixedGameDialogContent(),
+          );
+
           timer.cancel();
         }
       }
@@ -36,20 +47,21 @@ class TimeService extends StateNotifier<int?> {
   }
 
   void resetTimer(Difficulty difficultyDisplay) {
-    state = int.tryParse(difficultyDisplay.time);
+    _timer?.cancel();
+    startTimer(difficultyDisplay);
   }
 
-  static void cancelTimer() {
-    _timer.cancel();
+  void cancelTimer() {
+    _timer?.cancel();
   }
 }
 
-final gameProvider = StateNotifierProvider<GameService, Map<String, dynamic>>((ref) => GameService());
-
-final gameService = GameService();
+final gameProvider = StateNotifierProvider<GameService, Map<String, dynamic>>((ref) {
+  return GameService(ref.read(timeProvider.notifier));
+});
 
 class GameService extends StateNotifier<Map<String, dynamic>> {
-  GameService()
+  GameService(this._timeService)
       : super({
           "board": List.generate(
             3,
@@ -60,6 +72,7 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
         });
 
   int _moves = 0;
+  final TimeService _timeService;
 
   bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
     _onMovePlaced(state["playerSymbol"], row, col);
@@ -71,6 +84,7 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
     if (_checkGameStatus(state["compSymbol"], difficultyDisplay)) {
       return true;
     }
+    _timeService.resetTimer(difficultyDisplay);
     return false;
   }
 
@@ -83,7 +97,7 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
 
   bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
     if (_checkWin(currentPlayer)) {
-      TimeService().resetTimer(difficultyDisplay);
+      _timeService.resetTimer(difficultyDisplay);
       CustomDialog.showUnclosableGetDialog(
         currentPlayer == state["playerSymbol"]
             ? "Triumph is yours. A well deserved victory!"
@@ -92,7 +106,7 @@ class GameService extends StateNotifier<Map<String, dynamic>> {
       );
       return true;
     } else if (_moves == 9) {
-      TimeService.cancelTimer();
+      _timeService.cancelTimer();
       CustomDialog.showUnclosableGetDialog(
         "Getting a draw is sometimes the best.",
         CustomDialog.buildFixedGameDialogContent(),

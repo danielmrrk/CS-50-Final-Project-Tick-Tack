@@ -43,16 +43,16 @@ class _GameFieldState extends ConsumerState<GameField> {
           return GestureDetector(
             onTap: () {
               if (!_isOver) {
-                _isOver = gameService.onPlayerPlacedMove(row, col, widget.difficultyDisplay);
+                _isOver = ref.read(gameProvider.notifier).onPlayerPlacedMove(row, col, widget.difficultyDisplay);
                 setState(() {});
               }
             },
             child: Container(
               padding: const EdgeInsets.all(20),
               color: TTColorTheme.background,
-              child: gameService.board[row][col] != "' '"
+              child: ref.watch(gameProvider.notifier).board[row][col] != "' '"
                   ? SvgPicture.asset(
-                      "assets/images/${gameService.board[row][col].replaceAll("'", "")}.svg",
+                      "assets/images/${ref.watch(gameProvider.notifier).board[row][col].replaceAll("'", "")}.svg",
                     )
                   : null,
             ),

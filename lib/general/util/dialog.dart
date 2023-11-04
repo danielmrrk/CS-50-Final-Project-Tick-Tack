@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:tic_tac/game/game_provider.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
@@ -36,7 +37,7 @@ class CustomDialog {
                   reset: true,
                 ),
               );
-              gameService.clear();
+              //clear();
             }),
             const SizedBox(height: 8),
             const TTButton(title: "Statistics").fullWidthButton(() {})
