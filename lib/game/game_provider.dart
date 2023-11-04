@@ -20,10 +20,6 @@ class TimeService extends StateNotifier<int?> {
     super.dispose();
   }
 
-  int? getTime() {
-    return state;
-  }
-
   void startTimer(Difficulty difficultyDisplay) {
     state = int.tryParse(difficultyDisplay.time);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -58,7 +54,7 @@ final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref
 });
 
 class GameService extends StateNotifier<List<List<String>>> {
-  GameService(this._timeService)
+  GameService._(this._timeService, this.compSymbol, this._playerSymbol)
       : super(
           List.generate(
             3,
@@ -66,18 +62,25 @@ class GameService extends StateNotifier<List<List<String>>> {
           ),
         );
 
+  factory GameService(TimeService timeService) {
+    bool randomTurn = Random().nextInt(2) == 0;
+    String compSymbol = randomTurn ? "O" : "X";
+    String playerSymbol = randomTurn ? "X" : "O";
+    return GameService._(timeService, compSymbol, playerSymbol);
+  }
+
   int _moves = 0;
-  String compSymbol = "O";
-  String playerSymbol = "X";
+  String compSymbol;
+  String _playerSymbol;
   final TimeService _timeService;
 
   bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
-    _onMovePlaced(playerSymbol, row, col);
-    if (_checkGameStatus(playerSymbol, difficultyDisplay)) {
+    _onMovePlaced(_playerSymbol, row, col);
+    if (_checkGameStatus(_playerSymbol, difficultyDisplay)) {
       return true;
     }
 
-    _movePlacedByComp();
+    movePlacedByComp();
     if (_checkGameStatus(compSymbol, difficultyDisplay)) {
       return true;
     }
@@ -89,6 +92,9 @@ class GameService extends StateNotifier<List<List<String>>> {
     Future.microtask(() {
       state = List.generate(3, (index) => List.generate(3, (index) => "' '"));
       _moves = 0;
+      bool randomTurn = Random().nextInt(2) == 0;
+      compSymbol = randomTurn ? "O" : "X";
+      _playerSymbol = randomTurn ? "X" : "O";
     });
   }
 
@@ -96,7 +102,7 @@ class GameService extends StateNotifier<List<List<String>>> {
     if (_checkWin(currentPlayer)) {
       _timeService.cancelTimer();
       CustomDialog.showUnclosableGetDialog(
-        currentPlayer == playerSymbol ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
+        currentPlayer == _playerSymbol ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         CustomDialog.buildFixedGameDialogContent(),
       );
       return true;
@@ -139,7 +145,7 @@ class GameService extends StateNotifier<List<List<String>>> {
     state[row][col] = "'$currentPlayer'";
   }
 
-  void _movePlacedByComp() {
+  void movePlacedByComp() {
     try {
       ArrayPosition2D position = ArrayPosition2D.argmax(
         TicTacToeModelService.qValuesMap!["$state/$compSymbol"],

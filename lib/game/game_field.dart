@@ -23,6 +23,7 @@ class _GameFieldState extends ConsumerState<GameField> {
 
   @override
   void initState() {
+    shouldCompMoveFirst();
     super.initState();
   }
 
@@ -60,5 +61,12 @@ class _GameFieldState extends ConsumerState<GameField> {
         }),
       ),
     );
+  }
+
+  void shouldCompMoveFirst() {
+    bool compShouldMoveFirst = "X" == ref.read(gameProvider.notifier).compSymbol;
+    if (compShouldMoveFirst) {
+      ref.read(gameProvider.notifier).movePlacedByComp();
+    }
   }
 }
