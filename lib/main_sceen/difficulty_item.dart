@@ -43,10 +43,10 @@ class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStat
             child: Image(
               image: AssetImage(
                 widget.difficultyDisplay.focused
-                    ? "assets/edited_${widget.difficultyDisplay.technicalName}.png"
+                    ? "assets/images/edited_${widget.difficultyDisplay.technicalName}.png"
                     : widget.maybeDarken
-                        ? "assets/grey_${widget.difficultyDisplay.technicalName}.png"
-                        : "assets/${widget.difficultyDisplay.technicalName}.png",
+                        ? "assets/images/grey_${widget.difficultyDisplay.technicalName}.png"
+                        : "assets/images/${widget.difficultyDisplay.technicalName}.png",
               ),
               fit: BoxFit.cover,
             ),
@@ -61,7 +61,7 @@ class _DifficultyItemState extends State<DifficultyItem> with TickerProviderStat
               const Spacer(),
               StrokeText(text: widget.difficultyDisplay.time).body!,
               SvgPicture.asset(
-                "assets/hourglass_outlined.svg",
+                "assets/images/hourglass_outlined.svg",
                 width: 20,
               ),
               const SizedBox(width: 20)
