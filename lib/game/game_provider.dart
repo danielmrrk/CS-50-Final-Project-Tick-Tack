@@ -149,18 +149,8 @@ class GameService extends StateNotifier<List<List<String>>> {
     if (_moves == 0) {
       _compPlaysRandomMove();
     } else {
-      if (Random().nextInt(101) < difficultyDisplay.difficultyPercentage) {
-        try {
-          ArrayPosition2D position = ArrayPosition2D.argmax(
-            TicTacToeModelService.qValuesMap!["$state/$compSymbol"],
-          );
-          _onMovePlaced(compSymbol, position.row, position.col);
-        } catch (e) {
-          if (e is NoSuchMethodError) {
-            showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
-          }
-          return;
-        }
+      if (Random().nextInt(101) <= difficultyDisplay.difficultyPercentage) {
+        _compPlayBestMove();
       } else {
         _compPlaysRandomMove();
       }
@@ -168,18 +158,37 @@ class GameService extends StateNotifier<List<List<String>>> {
   }
 
   void _compPlaysRandomMove() {
-    // setup when it takes to long
+    int randomCount = 0;
     int row;
     int col;
     do {
+      if (randomCount == 10) {
+        _compPlayBestMove();
+        return;
+      }
       Random rdm = Random();
       row = rdm.nextInt(3);
       col = rdm.nextInt(3);
+      randomCount++;
     } while (!_isMoveValid(row, col));
     _onMovePlaced(compSymbol, row, col);
   }
 
   bool _isMoveValid(int row, int col) {
     return state[row][col] == "' '";
+  }
+
+  void _compPlayBestMove() {
+    try {
+      ArrayPosition2D position = ArrayPosition2D.argmax(
+        TicTacToeModelService.qValuesMap!["$state/$compSymbol"],
+      );
+      _onMovePlaced(compSymbol, position.row, position.col);
+    } catch (e) {
+      if (e is NoSuchMethodError) {
+        showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
+      }
+      return;
+    }
   }
 }
