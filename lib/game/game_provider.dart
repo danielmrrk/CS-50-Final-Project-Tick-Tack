@@ -80,7 +80,7 @@ class GameService extends StateNotifier<List<List<String>>> {
       return true;
     }
 
-    movePlacedByComp();
+    movePlacedByComp(difficultyDisplay);
     if (_checkGameStatus(compSymbol, difficultyDisplay)) {
       return true;
     }
@@ -145,17 +145,41 @@ class GameService extends StateNotifier<List<List<String>>> {
     state[row][col] = "'$currentPlayer'";
   }
 
-  void movePlacedByComp() {
-    try {
-      ArrayPosition2D position = ArrayPosition2D.argmax(
-        TicTacToeModelService.qValuesMap!["$state/$compSymbol"],
-      );
-      _onMovePlaced(compSymbol, position.row, position.col);
-    } catch (e) {
-      if (e is NoSuchMethodError) {
-        showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
+  void movePlacedByComp(Difficulty difficultyDisplay) {
+    if (_moves == 0) {
+      _compPlaysRandomMove();
+    } else {
+      if (Random().nextInt(101) < difficultyDisplay.difficultyPercentage) {
+        try {
+          ArrayPosition2D position = ArrayPosition2D.argmax(
+            TicTacToeModelService.qValuesMap!["$state/$compSymbol"],
+          );
+          _onMovePlaced(compSymbol, position.row, position.col);
+        } catch (e) {
+          if (e is NoSuchMethodError) {
+            showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
+          }
+          return;
+        }
+      } else {
+        _compPlaysRandomMove();
       }
-      return;
     }
+  }
+
+  void _compPlaysRandomMove() {
+    // setup when it takes to long
+    int row;
+    int col;
+    do {
+      Random rdm = Random();
+      row = rdm.nextInt(3);
+      col = rdm.nextInt(3);
+    } while (!_isMoveValid(row, col));
+    _onMovePlaced(compSymbol, row, col);
+  }
+
+  bool _isMoveValid(int row, int col) {
+    return state[row][col] == "' '";
   }
 }
