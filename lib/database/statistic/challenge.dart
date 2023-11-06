@@ -9,6 +9,8 @@ class ChallengeField {
     progress,
     challengeGoal,
     showChallenge,
+    difficulty,
+    clearCondition,
   ];
   static const id = '_id';
   static const content = 'content';
@@ -17,6 +19,8 @@ class ChallengeField {
   static const progress = 'progress';
   static const challengeGoal = 'challenge_goal';
   static const showChallenge = 'show_challenge';
+  static const difficulty = 'difficulty';
+  static const clearCondition = 'clear_condition';
 }
 
 class Challenge {
@@ -24,55 +28,66 @@ class Challenge {
     this.id,
     required this.content,
     required this.exp,
-    required this.achieved,
+    this.cleared = false,
     this.progress,
-    this.challengeGoal,
+    this.progressGoal,
     this.showChallenge = false,
+    required this.difficulty,
+    required this.clearCondition,
   });
   final int? id;
   final String content;
   final int exp;
-  final bool achieved;
+  final bool cleared;
   final int? progress;
-  final int? challengeGoal;
+  final int? progressGoal;
   final bool showChallenge;
+  final String difficulty;
+  final String clearCondition;
 
   static Challenge fromJson(Map<String, Object?> json) => Challenge(
         id: json[ChallengeField.id] as int?,
         content: json[ChallengeField.content] as String,
         exp: json[ChallengeField.exp] as int,
-        achieved: json[ChallengeField.achieved] == 1,
+        cleared: json[ChallengeField.achieved] == 1,
         progress: json[ChallengeField.progress] as int?,
-        challengeGoal: json[ChallengeField.challengeGoal] as int?,
+        progressGoal: json[ChallengeField.challengeGoal] as int?,
         showChallenge: json[ChallengeField.showChallenge] == 1,
+        difficulty: json[ChallengeField.difficulty] as String,
+        clearCondition: json[ChallengeField.clearCondition] as String,
       );
 
   Map<String, Object?> toJson() => {
         ChallengeField.id: id,
         ChallengeField.content: content,
         ChallengeField.exp: exp,
-        ChallengeField.achieved: achieved ? 1 : 0,
+        ChallengeField.achieved: cleared ? 1 : 0,
         ChallengeField.progress: progress,
-        ChallengeField.challengeGoal: challengeGoal,
+        ChallengeField.challengeGoal: progressGoal,
         ChallengeField.showChallenge: showChallenge ? 1 : 0,
+        ChallengeField.difficulty: difficulty,
       };
 
   Challenge copy({
     int? id,
     String? content,
     int? exp,
-    bool? achieved,
+    bool? cleared,
     int? progress,
-    int? challengeGoal,
+    int? progressGoal,
     bool? showChallenge,
+    String? difficulty,
+    String? clearCondition,
   }) =>
       Challenge(
         id: id ?? this.id,
         content: content ?? this.content,
         exp: exp ?? this.exp,
-        achieved: achieved ?? this.achieved,
+        cleared: cleared ?? this.cleared,
         progress: progress ?? this.progress,
-        challengeGoal: challengeGoal ?? this.challengeGoal,
+        progressGoal: progressGoal ?? this.progressGoal,
         showChallenge: showChallenge ?? this.showChallenge,
+        difficulty: difficulty ?? this.difficulty,
+        clearCondition: clearCondition ?? this.clearCondition,
       );
 }

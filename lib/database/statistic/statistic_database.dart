@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:tic_tac/database/challenge/challenge.dart';
+import 'package:tic_tac/database/statistic/challenge.dart';
 
 class ChallengeDatabase {
   static final ChallengeDatabase instance = ChallengeDatabase._init();
@@ -35,6 +35,7 @@ class ChallengeDatabase {
       ${ChallengeField.progress} $intNullableType,
       ${ChallengeField.challengeGoal} $intNullableType,
       ${ChallengeField.showChallenge} $boolType,
+      ${ChallengeField.difficulty} $textType,
     )
 ''');
   }
