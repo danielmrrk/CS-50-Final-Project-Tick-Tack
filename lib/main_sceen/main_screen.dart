@@ -16,12 +16,12 @@ final images = [
   "grey_novice.png",
   "novice.png",
   "edited_novice.png",
-  "grey_white knight.png",
-  "white knight.png",
-  "edited_white knight.png",
-  "grey_dark wizard.png",
-  "dark wizard.png",
-  "edited_dark wizard.png"
+  "grey_white_knight.png",
+  "white_knight.png",
+  "edited_white_knight.png",
+  "grey_dark_wizard.png",
+  "dark_wizard.png",
+  "edited_dark_wizard.png"
 ];
 
 class MainScreen extends ConsumerStatefulWidget {

@@ -2,11 +2,13 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:tic_tac/database/statistic/challenge.dart';
+import 'package:tic_tac/database/statistic/challenge_data.dart';
+import 'package:tic_tac/database/statistic/user_statistic.dart';
 
-class ChallengeDatabase {
-  static final ChallengeDatabase instance = ChallengeDatabase._init();
+class StatisticDatabase {
+  static final StatisticDatabase instance = StatisticDatabase._init();
   static Database? _database;
-  ChallengeDatabase._init();
+  StatisticDatabase._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -17,30 +19,68 @@ class ChallengeDatabase {
   Future<Database> _initDatabase(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createDatabase);
+    print("dbPath: $dbPath");
+    print("path: $path");
+    return await openDatabase(path, version: 1, onCreate: _createDatabaseWithContent);
   }
 
-  Future<void> _createDatabase(Database db, int version) async {
+  Future<void> _createDatabaseWithContent(Database db, int version) async {
     const String idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const String textType = 'TEXT NOT NULL';
     const String boolType = 'BOOLEAN NOT NULL';
     const String intType = 'INTEGER NOT NULL';
     const String intNullableType = 'INTEGER NULL';
 
-    await db.execute('''CREATE TABLE $challengeTable (
+    await db.execute(
+      '''CREATE TABLE $challengeTable (
       ${ChallengeField.id} $idType,
       ${ChallengeField.content} $textType,
       ${ChallengeField.exp} $intType,
-      ${ChallengeField.achieved} $boolType,
+      ${ChallengeField.cleared} $boolType,
       ${ChallengeField.progress} $intNullableType,
       ${ChallengeField.challengeGoal} $intNullableType,
       ${ChallengeField.showChallenge} $boolType,
-      ${ChallengeField.difficulty} $textType,
-    )
-''');
+      ${ChallengeField.difficulty} $textType
+    )''',
+    );
+
+    for (Challenge challenge in challengeData) {
+      final id = await db.insert(
+        challengeTable,
+        challenge.toJson(),
+      );
+      if (id != -1) {
+        print("Succesfull");
+      } else {
+        print("not successful");
+      }
+    }
+
+    await db.execute(
+      '''CREATE TABLE $userStatisticTable (
+      ${UserStatisticField.winCountDrunkard} $intType,
+      ${UserStatisticField.winCountNovice} $intType,
+      ${UserStatisticField.winCountWhiteKnight} $intType,
+      ${UserStatisticField.winCountDarkWizard} $intType,
+      ${UserStatisticField.drawCountDrunkard} $intType, 
+      ${UserStatisticField.drawCountNovice} $intType,
+      ${UserStatisticField.drawCountWhiteKnight} $intType,
+      ${UserStatisticField.drawCountDarkWizard} $intType,
+      ${UserStatisticField.lossCountDrunkard} $intType,
+      ${UserStatisticField.lossCountNovice} $intType,
+      ${UserStatisticField.lossCountWhiteKnight} $intType,
+      ${UserStatisticField.lossCountDarkWizard} $intType,
+      ${UserStatisticField.rank} $textType,
+      ${UserStatisticField.rankExp} $intType
+    )''',
+    );
+    await db.insert(
+      userStatisticTable,
+      UserStatistic().toJson(),
+    );
   }
 
-  Future<Challenge> create(Challenge challenge) async {
+  Future<Challenge> createChallenge(Challenge challenge) async {
     final db = await instance.database;
     final id = await db.insert(
       challengeTable,
@@ -75,7 +115,7 @@ class ChallengeDatabase {
     return result.map((json) => Challenge.fromJson(json)).toList();
   }
 
-  Future<int> update(Challenge challenge) async {
+  Future<int> updateChallenge(Challenge challenge) async {
     final db = await instance.database;
     return db.update(
       challengeTable,
@@ -85,7 +125,7 @@ class ChallengeDatabase {
     );
   }
 
-  Future<int> delete(int id) async {
+  Future<int> deleteChallenge(int id) async {
     final db = await instance.database;
     return await db.delete(
       challengeTable,

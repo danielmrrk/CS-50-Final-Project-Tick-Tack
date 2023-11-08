@@ -5,7 +5,7 @@ class ChallengeField {
     id,
     content,
     exp,
-    achieved,
+    cleared,
     progress,
     challengeGoal,
     showChallenge,
@@ -15,7 +15,7 @@ class ChallengeField {
   static const id = '_id';
   static const content = 'content';
   static const exp = 'exp';
-  static const achieved = 'achieved';
+  static const cleared = 'cleared';
   static const progress = 'progress';
   static const challengeGoal = 'challenge_goal';
   static const showChallenge = 'show_challenge';
@@ -49,7 +49,7 @@ class Challenge {
         id: json[ChallengeField.id] as int?,
         content: json[ChallengeField.content] as String,
         exp: json[ChallengeField.exp] as int,
-        cleared: json[ChallengeField.achieved] == 1,
+        cleared: json[ChallengeField.cleared] == 1,
         progress: json[ChallengeField.progress] as int?,
         progressGoal: json[ChallengeField.challengeGoal] as int?,
         showChallenge: json[ChallengeField.showChallenge] == 1,
@@ -61,11 +61,12 @@ class Challenge {
         ChallengeField.id: id,
         ChallengeField.content: content,
         ChallengeField.exp: exp,
-        ChallengeField.achieved: cleared ? 1 : 0,
+        ChallengeField.cleared: cleared ? 1 : 0,
         ChallengeField.progress: progress,
         ChallengeField.challengeGoal: progressGoal,
         ChallengeField.showChallenge: showChallenge ? 1 : 0,
         ChallengeField.difficulty: difficulty,
+        ChallengeField.clearCondition: clearCondition,
       };
 
   Challenge copy({
