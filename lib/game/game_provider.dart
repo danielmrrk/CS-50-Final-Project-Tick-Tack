@@ -1,6 +1,7 @@
 import "dart:async";
 import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:tic_tac/database/statistic/statistic_database.dart";
 
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
@@ -101,11 +102,14 @@ class GameService extends StateNotifier<List<List<String>>> {
   bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
     if (_checkWin(currentPlayer)) {
       _timeService.cancelTimer();
+      bool userHasWon = currentPlayer == _playerSymbol;
       CustomDialog.showGetDialog(
-        title: currentPlayer == _playerSymbol
-            ? "Triumph is yours. A well deserved victory!"
-            : "What an unfortunate loss. Good luck next time!",
+        title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildFixedGameDialogContent(),
+      );
+      StatisticDatabase.instance.updateUserStatistic(
+        difficulty: difficultyDisplay.technicalName,
+        result: userHasWon ? "win" : "loss",
       );
       return true;
     } else if (_moves == 9) {
@@ -113,6 +117,10 @@ class GameService extends StateNotifier<List<List<String>>> {
       CustomDialog.showGetDialog(
         title: "Getting a draw is sometimes the best.",
         content: CustomDialog.buildFixedGameDialogContent(),
+      );
+      StatisticDatabase.instance.updateUserStatistic(
+        difficulty: difficultyDisplay.technicalName,
+        result: "draw",
       );
       return true;
     }

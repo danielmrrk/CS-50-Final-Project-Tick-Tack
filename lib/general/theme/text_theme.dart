@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tic_tac/general/theme/color_theme.dart';
 
 class TTTextTheme {
   static final strikingTitle = GoogleFonts.bebasNeue(
     fontSize: 36,
-    color: const Color(0xffB552DE),
+    color: TTColorTheme.onBackground,
     fontWeight: FontWeight.w400,
+  );
+
+  static final colorfulTitle = GoogleFonts.montserrat(
+    color: TTColorTheme.onBackground,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 0.06,
+  );
+
+  static final bodyStatisticDisplay = GoogleFonts.montserrat(
+    fontSize: 48,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
   );
 
   static final strokeBody = GoogleFonts.montserrat(

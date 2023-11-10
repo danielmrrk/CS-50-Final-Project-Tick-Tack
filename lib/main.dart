@@ -22,17 +22,22 @@ class TicTacApp extends StatelessWidget {
     return GetMaterialApp(
       home: const MainScreen(),
       theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xff271045),
-          filledButtonTheme: const FilledButtonThemeData(
-            style: ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Color(0xffb552de)),
-            ),
+        scaffoldBackgroundColor: const Color(0xff271045),
+        filledButtonTheme: const FilledButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(Color(0xffb552de)),
           ),
-          snackBarTheme: SnackBarThemeData(
-            contentTextStyle: TTTextTheme.bodyMedium,
-            backgroundColor: TTColorTheme.onBackground,
-          ),
-          appBarTheme: const AppBarTheme(backgroundColor: TTColorTheme.background, elevation: 0)),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          contentTextStyle: TTTextTheme.bodyMedium,
+          backgroundColor: TTColorTheme.onBackground,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: TTColorTheme.background,
+          elevation: 0,
+          titleTextStyle: TTTextTheme.bodyLarge,
+        ),
+      ),
     );
   }
 }

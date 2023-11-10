@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tic_tac/database/statistic/statistic_database.dart';
 
 import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
+import 'package:tic_tac/statistic/statistic_screen.dart';
 
 class CustomDialog {
   static Widget buildGameDialogContent({
@@ -38,7 +40,11 @@ class CustomDialog {
               );
             }),
             const SizedBox(height: 8),
-            const TTButton(title: "Statistics").fullWidthButton(() {})
+            const TTButton(title: "Statistics").fullWidthButton(() {
+              Get.to(
+                () => const StatisticScreen(),
+              );
+            })
           ],
         ),
       );
