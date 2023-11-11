@@ -80,6 +80,7 @@ class StatisticScreenState extends State<StatisticScreen> {
           DraggableScrollableSheet(
             initialChildSize: 0.35,
             minChildSize: 0.35,
+            maxChildSize: 0.7,
             snap: true,
             builder: (context, controller) => Container(
               decoration: const BoxDecoration(
@@ -99,7 +100,11 @@ class StatisticScreenState extends State<StatisticScreen> {
                   return index == 0
                       ? Padding(
                           padding: const EdgeInsets.all(16),
-                          child: Text("Mastery Challenges", style: TTTextTheme.strikingTitle),
+                          child: Text(
+                            "Mastery Challenges",
+                            style: TTTextTheme.strikingTitle,
+                            textAlign: TextAlign.center,
+                          ),
                         )
                       : ChallengeItem(challengeData: _challenges[index - 1]);
                 }),
