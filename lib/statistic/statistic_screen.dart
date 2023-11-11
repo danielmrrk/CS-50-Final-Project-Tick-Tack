@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/database/statistic/challenge.dart';
-import 'package:tic_tac/database/statistic/challenge_data.dart';
 import 'package:tic_tac/database/statistic/statistic_database.dart';
 import 'package:tic_tac/database/statistic/user_statistic.dart';
-import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/statistic/challenge_item.dart';
 import 'package:tic_tac/statistic/rank_display.dart';
@@ -49,16 +47,25 @@ class StatisticScreenState extends State<StatisticScreen> {
                     crossAxisSpacing: 8,
                     children: [
                       StatisticDisplay(
+                        userData: _userStatistic,
                         displayValue: _userStatistic?.winCount.toString() ?? '0',
                         imagePath: 'assets/images/trophy.png',
+                        detailData: "win",
+                        clickable: true,
                       ),
                       StatisticDisplay(
+                        userData: _userStatistic,
                         displayValue: _userStatistic?.drawCount.toString() ?? '0',
                         imagePath: 'assets/images/balance-scale.png',
+                        detailData: "draw",
+                        clickable: true,
                       ),
                       StatisticDisplay(
+                        userData: _userStatistic,
                         displayValue: _userStatistic?.lossCount.toString() ?? '0',
                         imagePath: 'assets/images/skull.png',
+                        detailData: "loss",
+                        clickable: true,
                       ),
                       StatisticDisplay(
                         displayValue: "${_userStatistic?.winRate.toString() ?? '0'}%",

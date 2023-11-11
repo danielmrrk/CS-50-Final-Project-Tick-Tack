@@ -33,8 +33,11 @@ class TimeService extends StateNotifier<int?> {
             title: "You lost on time. Good luck next time.",
             content: CustomDialog.buildFixedGameDialogContent(),
           );
-
           timer.cancel();
+          StatisticDatabase.instance.updateUserStatistic(
+            difficulty: difficultyDisplay.technicalName,
+            result: "loss",
+          );
         }
       }
     });
