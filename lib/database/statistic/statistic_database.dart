@@ -198,10 +198,9 @@ SELECT
 ''');
 // result.first is an unmodifiable map
     final Map<String, dynamic> userStatisticMap = Map<String, dynamic>.from(result.first);
-    final int absoluteCount =
-        (userStatisticMap['winCount'] as int) + (userStatisticMap['lossCount'] as int) + (userStatisticMap['drawCount'] as int);
-    if (absoluteCount != 0) {
-      userStatisticMap['winRate'] = (userStatisticMap['winCount'] as int) ~/ absoluteCount;
+    final int absoluteWinLossCount = (userStatisticMap['winCount'] as int) + (userStatisticMap['lossCount'] as int);
+    if (absoluteWinLossCount != 0) {
+      userStatisticMap['winRate'] = (userStatisticMap['winCount'] as int) * 100 ~/ absoluteWinLossCount;
     } else {
       userStatisticMap['winRate'] = 0;
     }
@@ -216,7 +215,7 @@ SELECT
   }) async {
     final db = await instance.database;
     UserStatistic userStatistic = await readUserStatistic();
-    // need to update rankExp & rank
+    // TODO: need to update rankExp & rank
     if (difficulty != null || result != null) {
       userStatistic = _updateGameCount(userStatistic, difficulty!, result!);
     } else {

@@ -111,6 +111,8 @@ class UserStatistic {
     int? lossCountDarkWizard,
     String? rank,
     int? rankExp,
+    // wait ?
+    int? winRate,
   }) {
     return UserStatistic(
       winCountDrunkard: winCountDrunkard ?? this.winCountDrunkard,
@@ -127,6 +129,7 @@ class UserStatistic {
       lossCountDarkWizard: lossCountDarkWizard ?? this.lossCountDarkWizard,
       rank: rank ?? this.rank,
       rankExp: rankExp ?? this.rankExp,
+      winRate: winRate ?? this.winRate,
     );
   }
 

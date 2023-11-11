@@ -3,9 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 
 class TTTextTheme {
-  static final strikingTitle = GoogleFonts.bebasNeue(
+  static final strikingColorfulTitle = GoogleFonts.bebasNeue(
     fontSize: 36,
     color: TTColorTheme.onBackground,
+    fontWeight: FontWeight.w400,
+  );
+
+  static final strikingTitle = GoogleFonts.bebasNeue(
+    fontSize: 36,
+    color: Colors.white,
     fontWeight: FontWeight.w400,
   );
 
@@ -16,11 +22,21 @@ class TTTextTheme {
     height: 0.06,
   );
 
-  static final bodyStatisticDisplay = GoogleFonts.montserrat(
-    fontSize: 48,
+  static final expDisplay = GoogleFonts.montserrat(
+    fontSize: 16,
     fontWeight: FontWeight.w600,
-    color: Colors.white,
+    color: TTColorTheme.highlight,
   );
+
+  static TextStyle bodyStatisticDisplay(int displayValue) => GoogleFonts.montserrat(
+        fontSize: displayValue < 10
+            ? 48
+            : displayValue < 100
+                ? 40
+                : 32,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      );
 
   static final strokeBody = GoogleFonts.montserrat(
       fontSize: 18,
@@ -29,6 +45,12 @@ class TTTextTheme {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
         ..color = Colors.black);
+
+  static final bodyExtraLarge = GoogleFonts.montserrat(
+    fontSize: 28,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  );
 
   static final bodyLargeBold = GoogleFonts.montserrat(
     fontSize: 18,
@@ -45,6 +67,11 @@ class TTTextTheme {
     height: 1,
   );
 
+  static final bodyLarge = GoogleFonts.montserrat(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  );
   static final bodyMediumSemiBold = GoogleFonts.montserrat(
     fontSize: 14,
     fontWeight: FontWeight.w600,
@@ -53,18 +80,6 @@ class TTTextTheme {
 
   static final bodyMedium = GoogleFonts.montserrat(
     fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: Colors.white,
-  );
-
-  static final bodyExtraLarge = GoogleFonts.montserrat(
-    fontSize: 28,
-    fontWeight: FontWeight.w500,
-    color: Colors.white,
-  );
-
-  static final bodyLarge = GoogleFonts.montserrat(
-    fontSize: 20,
     fontWeight: FontWeight.w500,
     color: Colors.white,
   );

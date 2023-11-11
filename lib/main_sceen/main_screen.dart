@@ -89,7 +89,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           children: [
             Text(
               "Choose your difficulty",
-              style: TTTextTheme.strikingTitle,
+              style: TTTextTheme.strikingColorfulTitle,
             ),
             const SizedBox(height: 20),
             DifficultyGrid(
