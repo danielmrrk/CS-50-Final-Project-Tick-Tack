@@ -8,20 +8,25 @@ import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/general/util/snackbar.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_grid.dart';
+import 'package:tic_tac/statistic/statistic_screen.dart';
 
 final images = [
   "grey_drunkard.png",
   "drunkard.png",
   "edited_drunkard.png",
+  "rank_drunkard.png",
   "grey_novice.png",
   "novice.png",
   "edited_novice.png",
-  "grey_white knight.png",
-  "white knight.png",
-  "edited_white knight.png",
-  "grey_dark wizard.png",
-  "dark wizard.png",
-  "edited_dark wizard.png"
+  "rank_novice.png",
+  "grey_white_knight.png",
+  "white_knight.png",
+  "edited_white_knight.png",
+  "rank_white_knight.png",
+  "grey_dark_wizard.png",
+  "dark_wizard.png",
+  "edited_dark_wizard.png",
+  "rank_dark_wizard.png",
 ];
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -84,7 +89,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
           children: [
             Text(
               "Choose your difficulty",
-              style: TTTextTheme.strikingTitle,
+              style: TTTextTheme.strikingColorfulTitle,
             ),
             const SizedBox(height: 20),
             DifficultyGrid(
@@ -108,7 +113,9 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
                     },
                   ),
                   const SizedBox(height: 8),
-                  const TTButton(title: "Stats & Challenges").fullWidthButton(() {}),
+                  const TTButton(title: "Stats & Challenges").fullWidthButton(() {
+                    Get.to(() => const StatisticScreen());
+                  }),
                 ],
               ),
             )

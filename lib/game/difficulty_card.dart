@@ -9,12 +9,14 @@ class DifficultyCard extends StatelessWidget {
     required this.strokeColor,
     required this.height,
     required this.width,
+    this.rankImage = false,
   });
 
   final Difficulty difficultyDisplay;
   final Color strokeColor;
   final double height;
   final double width;
+  final bool rankImage;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,9 @@ class DifficultyCard extends StatelessWidget {
           side: BorderSide(color: strokeColor, width: 4, strokeAlign: -1),
         ),
         child: Image(
-          image: AssetImage("assets/images/edited_${difficultyDisplay.technicalName}.png"),
+          image: AssetImage(rankImage
+              ? "assets/images/rank_${difficultyDisplay.technicalName}.png"
+              : "assets/images/edited_${difficultyDisplay.technicalName}.png"),
           fit: BoxFit.cover,
         ),
       ),
