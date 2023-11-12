@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac/database/statistic/user_statistic.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class StatisticDisplay extends StatefulWidget {
   const StatisticDisplay({
     super.key,
     required this.displayValue,
     this.detailData,
-    this.userData,
+    this.userStatistic,
     this.imagePath,
     this.clickable = false,
   });
 
   final String displayValue;
-  final UserStatistic? userData;
+  final Map<String, String>? userStatistic;
   final String? detailData;
   final String? imagePath;
   final bool clickable;
@@ -72,188 +72,43 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
-              children: [displayDetailedContent() ?? const Text('No data')],
+              children: [displayDetailedContent(widget.detailData!)],
             )),
       );
 
-  Widget? displayDetailedContent() {
-    if (widget.detailData == null || widget.userData == null) {
-      return null;
-    }
-    switch (widget.detailData) {
-      case "win":
-        return Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  Difficulty.drunkard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.winCountDrunkard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.novice.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.winCountNovice}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.whiteKnight.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.winCountWhiteKnight}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.darkWizard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.winCountDarkWizard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-          ],
-        );
-      case "draw":
-        return Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  Difficulty.drunkard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.drawCountDrunkard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.novice.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.drawCountNovice}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.whiteKnight.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.drawCountWhiteKnight}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.darkWizard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.drawCountDarkWizard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-          ],
-        );
-      case "loss":
-        return Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  Difficulty.drunkard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.lossCountDrunkard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.novice.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.lossCountNovice}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.whiteKnight.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.lossCountWhiteKnight}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  Difficulty.darkWizard.displayName,
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-                const Spacer(),
-                Text(
-                  "${widget.userData!.lossCountDarkWizard}",
-                  style: TTTextTheme.bodyMediumSemiBold,
-                ),
-              ],
-            ),
-          ],
-        );
+  Widget displayDetailedContent(String gameResultKey) {
+    switch (gameResultKey) {
+      case kWinKey:
+        return getSpecificResultColumn(kWinKey);
+      case kDrawKey:
+        return getSpecificResultColumn(kDrawKey);
+      case kLossKey:
+        return getSpecificResultColumn(kLossKey);
       default:
-        return const Text('No data');
+        throw Exception("Invalid game result key");
     }
+  }
+
+  Widget getSpecificResultColumn(String gameResultKey) {
+    return Column(
+      children: [
+        for (var rank in Difficulty.ranks)
+          Row(
+            children: [
+              Text(
+                rank.displayName,
+                style: TTTextTheme.bodyMediumSemiBold,
+              ),
+              const Spacer(),
+              Text(
+                widget.userStatistic?["$gameResultKey/${rank.displayName}"] != null
+                    ? widget.userStatistic!["$gameResultKey/${rank.displayName}"]!
+                    : '0',
+                style: TTTextTheme.bodyMediumSemiBold,
+              ),
+            ],
+          ),
+      ],
+    );
   }
 }

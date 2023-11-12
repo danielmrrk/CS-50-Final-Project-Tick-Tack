@@ -22,11 +22,11 @@ class TTTextTheme {
     height: 0.06,
   );
 
-  static final expDisplay = GoogleFonts.montserrat(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: TTColorTheme.highlight,
-  );
+  static TextStyle expDisplay(bool cleared) => GoogleFonts.montserrat(
+        fontSize: cleared ? 20 : 16,
+        fontWeight: FontWeight.w600,
+        color: TTColorTheme.highlight,
+      );
 
   static TextStyle bodyStatisticDisplay(int displayValue) => GoogleFonts.montserrat(
         fontSize: displayValue < 10
@@ -72,6 +72,16 @@ class TTTextTheme {
     fontWeight: FontWeight.w500,
     color: Colors.white,
   );
+
+  static final bodyMediumBold = GoogleFonts.montserrat(
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    letterSpacing: -0.2,
+    height: 1,
+  );
+
   static final bodyMediumSemiBold = GoogleFonts.montserrat(
     fontSize: 14,
     fontWeight: FontWeight.w600,

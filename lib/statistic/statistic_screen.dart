@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/database/statistic/challenge.dart';
 import 'package:tic_tac/database/statistic/statistic_database.dart';
-import 'package:tic_tac/database/statistic/user_statistic.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/statistic/challenge_item.dart';
 import 'package:tic_tac/statistic/rank_display.dart';
 import 'package:tic_tac/statistic/statistic_display.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class StatisticScreen extends StatefulWidget {
   const StatisticScreen({super.key});
@@ -14,7 +14,7 @@ class StatisticScreen extends StatefulWidget {
 }
 
 class StatisticScreenState extends State<StatisticScreen> {
-  UserStatistic? _userStatistic;
+  Map<String, String>? _userStatistic;
   List<Challenge> _challenges = [];
   @override
   void initState() {
@@ -47,28 +47,28 @@ class StatisticScreenState extends State<StatisticScreen> {
                     crossAxisSpacing: 8,
                     children: [
                       StatisticDisplay(
-                        userData: _userStatistic,
-                        displayValue: _userStatistic?.winCount.toString() ?? '0',
+                        userStatistic: _userStatistic,
+                        displayValue: _userStatistic?[kWinKey] ?? '0',
                         imagePath: 'assets/images/trophy.png',
-                        detailData: "win",
+                        detailData: kWinKey,
                         clickable: true,
                       ),
                       StatisticDisplay(
-                        userData: _userStatistic,
-                        displayValue: _userStatistic?.drawCount.toString() ?? '0',
+                        userStatistic: _userStatistic,
+                        displayValue: _userStatistic?[kDrawKey] ?? '0',
                         imagePath: 'assets/images/balance-scale.png',
-                        detailData: "draw",
+                        detailData: kDrawKey,
                         clickable: true,
                       ),
                       StatisticDisplay(
-                        userData: _userStatistic,
-                        displayValue: _userStatistic?.lossCount.toString() ?? '0',
+                        userStatistic: _userStatistic,
+                        displayValue: _userStatistic?[kLossKey] ?? '0',
                         imagePath: 'assets/images/skull.png',
-                        detailData: "loss",
+                        detailData: kLossKey,
                         clickable: true,
                       ),
                       StatisticDisplay(
-                        displayValue: "${_userStatistic?.winRate.toString() ?? '0'}%",
+                        displayValue: "${_userStatistic?[kWinRate] ?? '0'}%",
                         imagePath: 'assets/images/trophy_skull.png',
                       ),
                     ],
@@ -117,7 +117,7 @@ class StatisticScreenState extends State<StatisticScreen> {
   }
 
   void initUserStatistic() async {
-    UserStatistic userStatistic = await StatisticDatabase.instance.readUserStatistic();
+    final Map<String, String> userStatistic = await UserStatisticService.instance.readAllUserStats();
     setState(() {
       _userStatistic = userStatistic;
     });

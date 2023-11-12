@@ -56,7 +56,7 @@ class Difficulty {
     TTColorTheme.darkWizardHighlight,
   );
 
-  static Difficulty fromDatabaseRank(String rank) {
+  static Difficulty fromStorage(String rank) {
     switch (rank) {
       case "Drunkard":
         return drunkard;

@@ -1,13 +1,12 @@
 import "dart:async";
 import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:tic_tac/database/statistic/statistic_database.dart";
-
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
 import "package:tic_tac/main_sceen/difficulty.dart";
 import 'package:tic_tac/service/model_service.dart';
+import "package:tic_tac/statistic/user_statistic_service.dart";
 
 final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
 
@@ -34,10 +33,7 @@ class TimeService extends StateNotifier<int?> {
             content: CustomDialog.buildFixedGameDialogContent(),
           );
           timer.cancel();
-          StatisticDatabase.instance.updateUserStatistic(
-            difficulty: difficultyDisplay.technicalName,
-            result: "loss",
-          );
+          UserStatisticService.instance.updateGameCount(difficultyDisplay, kLossKey);
         }
       }
     });
@@ -110,9 +106,9 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      StatisticDatabase.instance.updateUserStatistic(
-        difficulty: difficultyDisplay.technicalName,
-        result: userHasWon ? "win" : "loss",
+      UserStatisticService.instance.updateGameCount(
+        difficultyDisplay,
+        userHasWon ? kWinKey : kLossKey,
       );
       return true;
     } else if (_moves == 9) {
@@ -121,9 +117,9 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: "Getting a draw is sometimes the best.",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      StatisticDatabase.instance.updateUserStatistic(
-        difficulty: difficultyDisplay.technicalName,
-        result: "draw",
+      UserStatisticService.instance.updateGameCount(
+        difficultyDisplay,
+        kDrawKey,
       );
       return true;
     }
