@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac/database/statistic/user_statistic.dart';
 import 'package:tic_tac/game/difficulty_card.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class RankDisplay extends StatelessWidget {
   const RankDisplay({super.key, required this.userStatistic});
   final double strokeHeight = 4;
-  final UserStatistic? userStatistic;
+  final Map<String, String>? userStatistic;
 
   @override
   Widget build(BuildContext context) {
-    Difficulty difficultyDisplay = Difficulty.fromDatabaseRank(userStatistic?.rank ?? "");
+    Difficulty difficultyDisplay = Difficulty.fromStorage(userStatistic?[kRankKey] ?? "Drunkard");
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +51,7 @@ class RankDisplay extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "${userStatistic?.rankExp ?? "Loading"} / "
+                    "${userStatistic?[kExpKey] ?? '0'} / "
                     "${difficultyDisplay.expRequiredForRankUp}",
                     style: TTTextTheme.bodyMedium,
                   ),
