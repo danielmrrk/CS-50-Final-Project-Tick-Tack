@@ -101,7 +101,9 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
               ),
               const Spacer(),
               Text(
-                widget.userStatistic?["$gameResultKey/${rank.displayName}"] ?? '0',
+                widget.userStatistic?["$gameResultKey/${rank.displayName}"] != null
+                    ? widget.userStatistic!["$gameResultKey/${rank.displayName}"]!
+                    : '0',
                 style: TTTextTheme.bodyMediumSemiBold,
               ),
             ],
