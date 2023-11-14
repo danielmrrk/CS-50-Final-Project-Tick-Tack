@@ -1,6 +1,7 @@
 import "dart:async";
 import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:tic_tac/database/statistic/statistic_database.dart";
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
@@ -33,7 +34,10 @@ class TimeService extends StateNotifier<int?> {
             content: CustomDialog.buildFixedGameDialogContent(),
           );
           timer.cancel();
-          UserStatisticService.instance.updateGameCount(difficultyDisplay, kLossKey);
+          StatisticDatabase.instance.onResultUpdateChallenge(
+            resultKey: kLossKey,
+            difficultyDisplayName: difficultyDisplay.displayName,
+          );
         }
       }
     });
@@ -50,7 +54,9 @@ class TimeService extends StateNotifier<int?> {
 }
 
 final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref) {
-  return GameService(ref.read(timeProvider.notifier));
+  return GameService(
+    ref.read(timeProvider.notifier),
+  );
 });
 
 class GameService extends StateNotifier<List<List<String>>> {
@@ -106,9 +112,9 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      UserStatisticService.instance.updateGameCount(
-        difficultyDisplay,
-        userHasWon ? kWinKey : kLossKey,
+      StatisticDatabase.instance.onResultUpdateChallenge(
+        resultKey: userHasWon ? kWinKey : kLossKey,
+        difficultyDisplayName: difficultyDisplay.displayName,
       );
       return true;
     } else if (_moves == 9) {
@@ -117,9 +123,9 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: "Getting a draw is sometimes the best.",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      UserStatisticService.instance.updateGameCount(
-        difficultyDisplay,
-        kDrawKey,
+      StatisticDatabase.instance.onResultUpdateChallenge(
+        resultKey: kDrawKey,
+        difficultyDisplayName: difficultyDisplay.displayName,
       );
       return true;
     }

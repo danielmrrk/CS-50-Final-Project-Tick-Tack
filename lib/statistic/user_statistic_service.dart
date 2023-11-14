@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tic_tac/database/statistic/statistic_database.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 
 const kWinKey = 'win';
@@ -51,8 +52,8 @@ class UserStatisticService {
     return await _storage.readAll();
   }
 
-  Future<void> updateGameCount(Difficulty difficulty, String gameKey) async {
-    final difficultyKey = "$gameKey/${difficulty.displayName}";
+  Future<void> updateGameCount(String difficultyDisplayName, String gameKey) async {
+    final difficultyKey = "$gameKey/$difficultyDisplayName";
     final gameCount = await _storage.read(key: difficultyKey);
     if (gameCount == null) {
       await _storage.write(key: difficultyKey, value: '1');
@@ -93,6 +94,7 @@ class UserStatisticService {
           await _storage.write(key: kRankKey, value: 'Dark Wizard');
           break;
       }
+      await StatisticDatabase.instance.updateUnshowableChallenges(rank);
     }
   }
 }

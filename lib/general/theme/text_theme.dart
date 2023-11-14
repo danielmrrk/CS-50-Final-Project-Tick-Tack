@@ -19,7 +19,6 @@ class TTTextTheme {
     color: TTColorTheme.onBackground,
     fontSize: 24,
     fontWeight: FontWeight.w600,
-    height: 0.06,
   );
 
   static TextStyle expDisplay(bool cleared) => GoogleFonts.montserrat(

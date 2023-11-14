@@ -11,29 +11,31 @@ class RankDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Difficulty difficultyDisplay = Difficulty.fromStorage(userStatistic?[kRankKey] ?? "Drunkard");
+    Difficulty difficulty = Difficulty.fromStorage(userStatistic?[kRankKey] ?? "Drunkard");
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "RANK",
-              style: TTTextTheme.bodyLargeSemiBold,
-            ),
-            const SizedBox(height: 44),
-            Text(
-              difficultyDisplay.displayName,
-              style: TTTextTheme.colorfulTitle,
-            )
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "RANK",
+                style: TTTextTheme.bodyLargeSemiBold,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                difficulty.displayName,
+                style: TTTextTheme.colorfulTitle,
+              )
+            ],
+          ),
         ),
         Stack(
           children: [
             DifficultyCard(
-              difficultyDisplay: difficultyDisplay,
+              difficultyDisplay: difficulty,
               strokeColor: Colors.white,
               height: 180,
               width: 208,
@@ -47,12 +49,12 @@ class RankDisplay extends StatelessWidget {
                 width: 200,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
-                  color: difficultyDisplay.color.withOpacity(0.9),
+                  color: difficulty.color.withOpacity(0.9),
                 ),
                 child: Center(
                   child: Text(
                     "${userStatistic?[kExpKey] ?? '0'} / "
-                    "${difficultyDisplay.expRequiredForRankUp}",
+                    "${difficulty.expRequiredForRankUp}",
                     style: TTTextTheme.bodyMedium,
                   ),
                 ),

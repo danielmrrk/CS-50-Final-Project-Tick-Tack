@@ -5,6 +5,7 @@ class TTColorTheme {
   static const onBackground = Color(0xffb552de);
   static const onBackgroundDark = Color(0xff8f40b0);
   static const secondary = Color(0xff824ec6);
+  static const secondaryStroke = Color(0xffa783d7);
   static const highlight = Color(0xffffd700);
 
   static const drunkardHighlight = Color(0xff64100d);

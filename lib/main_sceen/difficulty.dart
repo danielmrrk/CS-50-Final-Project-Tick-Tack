@@ -51,7 +51,7 @@ class Difficulty {
     "3",
     "dark_wizard",
     false,
-    100,
+    95,
     80,
     TTColorTheme.darkWizardHighlight,
   );
