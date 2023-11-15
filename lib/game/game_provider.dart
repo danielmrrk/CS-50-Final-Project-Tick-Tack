@@ -1,7 +1,6 @@
 import "dart:async";
 import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:tic_tac/database/statistic/statistic_database.dart";
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
@@ -9,11 +8,16 @@ import "package:tic_tac/main_sceen/difficulty.dart";
 import 'package:tic_tac/service/model_service.dart';
 import "package:tic_tac/statistic/user_statistic_service.dart";
 
-final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
+final timeProvider = StateNotifierProvider<TimeService, int?>((ref) {
+  ref.read(userStatisticProvider.notifier);
+  return TimeService(ref.read(userStatisticProvider.notifier));
+});
 
 class TimeService extends StateNotifier<int?> {
-  TimeService() : super(null);
+  TimeService(this._userStatisticService) : super(null);
   Timer? _timer;
+
+  final UserStatisticService _userStatisticService;
 
   @override
   void dispose() {
@@ -34,10 +38,7 @@ class TimeService extends StateNotifier<int?> {
             content: CustomDialog.buildFixedGameDialogContent(),
           );
           timer.cancel();
-          StatisticDatabase.instance.onResultUpdateChallenge(
-            resultKey: kLossKey,
-            difficultyDisplayName: difficultyDisplay.displayName,
-          );
+          _userStatisticService.updateGameCount(difficultyDisplay.displayName, kLossKey);
         }
       }
     });
@@ -56,11 +57,12 @@ class TimeService extends StateNotifier<int?> {
 final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref) {
   return GameService(
     ref.read(timeProvider.notifier),
+    ref.read(userStatisticProvider.notifier),
   );
 });
 
 class GameService extends StateNotifier<List<List<String>>> {
-  GameService._(this._timeService, this.compSymbol, this._playerSymbol)
+  GameService._(this._timeService, this._userStatisticService, this.compSymbol, this._playerSymbol)
       : super(
           List.generate(
             3,
@@ -68,17 +70,18 @@ class GameService extends StateNotifier<List<List<String>>> {
           ),
         );
 
-  factory GameService(TimeService timeService) {
+  factory GameService(TimeService timeService, UserStatisticService userStatisticService) {
     bool randomTurn = Random().nextInt(2) == 0;
     String compSymbol = randomTurn ? "O" : "X";
     String playerSymbol = randomTurn ? "X" : "O";
-    return GameService._(timeService, compSymbol, playerSymbol);
+    return GameService._(timeService, userStatisticService, compSymbol, playerSymbol);
   }
 
   int _moves = 0;
   String compSymbol;
   String _playerSymbol;
   final TimeService _timeService;
+  final UserStatisticService _userStatisticService;
 
   bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
     _onMovePlaced(_playerSymbol, row, col);
@@ -104,7 +107,7 @@ class GameService extends StateNotifier<List<List<String>>> {
     });
   }
 
-  bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
+  bool _checkGameStatus(String currentPlayer, Difficulty difficulty) {
     if (_checkWin(currentPlayer)) {
       _timeService.cancelTimer();
       bool userHasWon = currentPlayer == _playerSymbol;
@@ -112,9 +115,9 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      StatisticDatabase.instance.onResultUpdateChallenge(
-        resultKey: userHasWon ? kWinKey : kLossKey,
-        difficultyDisplayName: difficultyDisplay.displayName,
+      _userStatisticService.updateGameCount(
+        difficulty.displayName,
+        userHasWon ? kWinKey : kLossKey,
       );
       return true;
     } else if (_moves == 9) {
@@ -123,10 +126,7 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: "Getting a draw is sometimes the best.",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      StatisticDatabase.instance.onResultUpdateChallenge(
-        resultKey: kDrawKey,
-        difficultyDisplayName: difficultyDisplay.displayName,
-      );
+      _userStatisticService.updateGameCount(difficulty.displayName, kDrawKey);
       return true;
     }
     return false;

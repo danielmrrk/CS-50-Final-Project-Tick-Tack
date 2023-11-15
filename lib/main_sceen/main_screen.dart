@@ -109,7 +109,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
                       ref.read(timeProvider.notifier).startTimer(_selectedDifficulty!);
 
-                      Get.to(() => GameScreen(difficultyDisplay: _selectedDifficulty!));
+                      Get.to(() => GameScreen(difficulty: _selectedDifficulty!));
                     },
                   ),
                   const SizedBox(height: 8),

@@ -97,7 +97,6 @@ class StatisticDatabase {
           AND ${ChallengeField.progress} IS NOT NULL AND ${ChallengeField.progress} < ${ChallengeField.challengeGoal}
           AND ${ChallengeField.showChallenge} = 1;
           ''');
-    UserStatisticService.instance.updateGameCount(difficultyDisplayName, resultKey);
   }
 
   Future<void> onCollectUpdateChallenge(Challenge challenge) async {
@@ -107,7 +106,6 @@ class StatisticDatabase {
     SET ${ChallengeField.showChallenge} = 0
     WHERE ${ChallengeField.id} = ${challenge.id} AND ${ChallengeField.cleared} = 1;
 ''');
-    UserStatisticService.instance.maybeUpdateUserStatus(challenge.exp);
   }
 
   Future<void> updateUnshowableChallenges(String difficultyDisplayName) async {

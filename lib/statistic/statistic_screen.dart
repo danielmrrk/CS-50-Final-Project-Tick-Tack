@@ -20,13 +20,13 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
   final key = GlobalKey<AnimatedListState>();
   @override
   void initState() {
-    fetchUserStatistic();
     fetchChallenges();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _userStatistic = ref.watch(userStatisticProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistic'),
@@ -145,13 +145,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
     );
   }
 
-  void fetchUserStatistic() async {
-    final Map<String, String> userStatistic = await UserStatisticService.instance.readAllUserStats();
-    setState(() {
-      _userStatistic = userStatistic;
-    });
-  }
-
   void fetchChallenges() async {
     List<Challenge> challenges = await StatisticDatabase.instance.readAllShowableChallenges();
     setState(() {
@@ -160,7 +153,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
   }
 
   void onRemoveClearedChallenge(Challenge challenge, int index, BuildContext context) async {
-    await StatisticDatabase.instance.onCollectUpdateChallenge(challenge);
+    ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
     _challenges.removeAt(index - 1);
     key.currentState!.removeItem(
       index,
@@ -174,7 +167,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
           onRemoveClearedChallenge: () {
             setState(() {
               onRemoveClearedChallenge(challenge, index, context);
-              fetchUserStatistic();
             });
           },
           setCleared: true,
@@ -182,6 +174,5 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
       ),
       duration: const Duration(milliseconds: 500),
     );
-    fetchUserStatistic();
   }
 }

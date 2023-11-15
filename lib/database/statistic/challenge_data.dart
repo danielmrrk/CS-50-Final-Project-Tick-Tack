@@ -10,6 +10,7 @@ enum ClearCondition {
   winWithoutLosingWhiteKnight,
   winWithoutLosingDarkWizard,
   win,
+  winIn3Moves,
 }
 
 final challengeData = [
@@ -61,7 +62,7 @@ final challengeData = [
     content: "Win in 3 moves",
     exp: 5,
     difficulty: Difficulty.novice.displayName,
-    clearCondition: ClearCondition.win.toString(),
+    clearCondition: ClearCondition.winIn3Moves.toString(),
   ),
   Challenge(
     id: 6,

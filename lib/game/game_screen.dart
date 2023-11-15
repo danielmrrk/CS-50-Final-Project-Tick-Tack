@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:tic_tac/database/statistic/statistic_database.dart';
 
 import 'package:tic_tac/game/game_field.dart';
 import 'package:tic_tac/game/game_provider.dart';
@@ -13,11 +14,12 @@ import 'package:tic_tac/general/util/dialog.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/game/difficulty_card.dart';
 import 'package:tic_tac/main_sceen/main_screen.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
-  const GameScreen({super.key, required this.difficultyDisplay});
+  const GameScreen({super.key, required this.difficulty});
 
-  final Difficulty difficultyDisplay;
+  final Difficulty difficulty;
 
   @override
   ConsumerState<GameScreen> createState() => _GameScreenState();
@@ -43,7 +45,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 DifficultyCard(
-                  difficultyDisplay: widget.difficultyDisplay,
+                  difficultyDisplay: widget.difficulty,
                   strokeColor: TTColorTheme.onBackground,
                   height: 180,
                   width: 164,
@@ -55,7 +57,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           ),
           Expanded(
             child: GameField(
-              difficultyDisplay: widget.difficultyDisplay,
+              difficultyDisplay: widget.difficulty,
             ),
           ),
           const SizedBox(height: 60),
@@ -101,6 +103,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                           children: [
                             const TTButton(title: "Yes").fullWidthButton(() {
                               ref.read(timeProvider.notifier).cancelTimer();
+                              ref.read(userStatisticProvider.notifier).updateGameCount(
+                                    widget.difficulty.displayName,
+                                    kLossKey,
+                                  );
                               Get.to(
                                 () => const MainScreen(
                                   reset: true,
