@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tic_tac/database/statistic/challenge.dart';
-import 'package:tic_tac/database/statistic/challenge_data.dart';
 import 'package:tic_tac/database/statistic/statistic_database.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/statistic/challenge_item.dart';
@@ -8,26 +8,25 @@ import 'package:tic_tac/statistic/rank_display.dart';
 import 'package:tic_tac/statistic/statistic_display.dart';
 import 'package:tic_tac/statistic/user_statistic_service.dart';
 
-class StatisticScreen extends StatefulWidget {
+class StatisticScreen extends ConsumerStatefulWidget {
   const StatisticScreen({super.key});
   @override
   StatisticScreenState createState() => StatisticScreenState();
 }
 
-class StatisticScreenState extends State<StatisticScreen> {
+class StatisticScreenState extends ConsumerState<StatisticScreen> {
   Map<String, String>? _userStatistic;
   List<Challenge> _challenges = [];
   final key = GlobalKey<AnimatedListState>();
   @override
   void initState() {
-    initUserStatistic();
-    initChallenges();
+    fetchUserStatistic();
+    fetchChallenges();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_challenges.length);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistic'),
@@ -104,7 +103,6 @@ class StatisticScreenState extends State<StatisticScreen> {
                       itemBuilder: ((context, index, animation) {
                         return index == 0
                             ? Padding(
-                                key: const ValueKey("Mastery Challenges"),
                                 padding: const EdgeInsets.all(16),
                                 child: Text(
                                   "Mastery Challenges",
@@ -116,14 +114,30 @@ class StatisticScreenState extends State<StatisticScreen> {
                                 key: ValueKey(_challenges[index - 1].content),
                                 challenge: _challenges[index - 1],
                                 onRemoveClearedChallenge: () {
-                                  setState(() {
-                                    onRemoveClearedChallenge(_challenges[index - 1], index - 1, context);
-                                  });
+                                  onRemoveClearedChallenge(_challenges[index - 1], index, context);
                                 },
                               );
                       }),
                     )
-                  : null,
+                  : SingleChildScrollView(
+                      controller: controller,
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            "Mastery Challenges",
+                            style: TTTextTheme.strikingTitle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 44),
+                        Text(
+                          "You completed all challenges.\nCongratulations!",
+                          style: TTTextTheme.bodyLargeSemiBold,
+                          textAlign: TextAlign.center,
+                        )
+                      ]),
+                    ),
             ),
           )
         ],
@@ -131,33 +145,43 @@ class StatisticScreenState extends State<StatisticScreen> {
     );
   }
 
-  void initUserStatistic() async {
+  void fetchUserStatistic() async {
     final Map<String, String> userStatistic = await UserStatisticService.instance.readAllUserStats();
     setState(() {
       _userStatistic = userStatistic;
     });
   }
 
-  void initChallenges() async {
+  void fetchChallenges() async {
     List<Challenge> challenges = await StatisticDatabase.instance.readAllShowableChallenges();
     setState(() {
       _challenges = challenges;
     });
   }
 
-  void onRemoveClearedChallenge(Challenge challenge, int correctIndex, BuildContext context) {
-    _challenges.removeAt(correctIndex);
+  void onRemoveClearedChallenge(Challenge challenge, int index, BuildContext context) async {
+    await StatisticDatabase.instance.onCollectUpdateChallenge(challenge);
+    _challenges.removeAt(index - 1);
     key.currentState!.removeItem(
-      correctIndex + 1,
+      index,
       (context, animation) => SizeTransition(
         sizeFactor: animation.drive(
           Tween(begin: 0, end: 1),
         ),
         child: ChallengeItem(
-          challenge: _challenges[correctIndex],
-          onRemoveClearedChallenge: onRemoveClearedChallenge,
+          key: ValueKey(challenge.content),
+          challenge: challenge,
+          onRemoveClearedChallenge: () {
+            setState(() {
+              onRemoveClearedChallenge(challenge, index, context);
+              fetchUserStatistic();
+            });
+          },
+          setCleared: true,
         ),
       ),
+      duration: const Duration(milliseconds: 500),
     );
+    fetchUserStatistic();
   }
 }

@@ -85,13 +85,16 @@ class UserStatisticService {
     } else {
       switch (rank) {
         case 'Drunkard':
-          await _storage.write(key: kRankKey, value: 'Novice');
+          rank = 'Novice';
+          await _storage.write(key: kRankKey, value: rank);
           break;
         case 'Novice':
-          await _storage.write(key: kRankKey, value: 'White Knight');
+          rank = 'White Knight';
+          await _storage.write(key: kRankKey, value: rank);
           break;
         case 'White Knight':
-          await _storage.write(key: kRankKey, value: 'Dark Wizard');
+          rank = 'Dark Wizard';
+          await _storage.write(key: kRankKey, value: rank);
           break;
       }
       await StatisticDatabase.instance.updateUnshowableChallenges(rank);

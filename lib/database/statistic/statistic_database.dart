@@ -3,7 +3,6 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:tic_tac/database/statistic/challenge.dart';
 import 'package:tic_tac/database/statistic/challenge_data.dart';
-import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class StatisticDatabase {
@@ -82,19 +81,19 @@ class StatisticDatabase {
 
   Future<void> onResultUpdateChallenge({required String resultKey, required String difficultyDisplayName}) async {
     final db = await StatisticDatabase.instance.database;
-    difficultyDisplayName = difficultyDisplayName.replaceAll(' ', '');
+    final String clearConditionDisplay = difficultyDisplayName.replaceAll(' ', '');
     await db.rawQuery('''
     UPDATE $challengeTable
     SET ${ChallengeField.cleared} = 1
     WHERE (${ChallengeField.progress} IS NULL OR ${ChallengeField.progress} >= ${ChallengeField.challengeGoal} - 1)
           AND (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' OR 
-          ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyDisplayName')
+          ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$clearConditionDisplay')
           AND ${ChallengeField.showChallenge} = 1;
 ''');
     await db.rawQuery('''
     UPDATE $challengeTable
     SET ${ChallengeField.progress} = ${ChallengeField.progress} + 1
-    WHERE (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyDisplayName')
+    WHERE (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$clearConditionDisplay')
           AND ${ChallengeField.progress} IS NOT NULL AND ${ChallengeField.progress} < ${ChallengeField.challengeGoal}
           AND ${ChallengeField.showChallenge} = 1;
           ''');

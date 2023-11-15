@@ -1,4 +1,5 @@
 import 'package:tic_tac/database/statistic/challenge.dart';
+import 'package:tic_tac/main_sceen/difficulty.dart';
 
 enum ClearCondition {
   winDrunkard,
@@ -11,13 +12,6 @@ enum ClearCondition {
   win,
 }
 
-enum DifficultyRank {
-  drunkard,
-  novice,
-  whiteKnight,
-  darkWizard,
-}
-
 final challengeData = [
   Challenge(
     id: 0,
@@ -25,7 +19,7 @@ final challengeData = [
     progress: 0,
     progressGoal: 3,
     exp: 15,
-    difficulty: DifficultyRank.drunkard.toString(),
+    difficulty: Difficulty.drunkard.displayName,
     showChallenge: true,
     clearCondition: ClearCondition.winDrunkard.toString(),
   ),
@@ -33,7 +27,7 @@ final challengeData = [
     id: 1,
     content: "Defeat the young novice",
     exp: 10,
-    difficulty: DifficultyRank.drunkard.toString(),
+    difficulty: Difficulty.drunkard.displayName,
     showChallenge: true,
     clearCondition: ClearCondition.winNovice.toString(),
   ),
@@ -41,7 +35,7 @@ final challengeData = [
     id: 2,
     content: "Win against the white knight once",
     exp: 20,
-    difficulty: DifficultyRank.drunkard.toString(),
+    difficulty: Difficulty.drunkard.displayName,
     showChallenge: true,
     clearCondition: ClearCondition.winWhiteKnight.toString(),
   ),
@@ -49,7 +43,7 @@ final challengeData = [
     id: 3,
     content: "Win against the almighty dark wizard",
     exp: 30,
-    difficulty: DifficultyRank.drunkard.toString(),
+    difficulty: Difficulty.drunkard.displayName,
     showChallenge: true,
     clearCondition: ClearCondition.winDarkWizard.toString(),
   ),
@@ -59,21 +53,21 @@ final challengeData = [
     progress: 0,
     progressGoal: 5,
     exp: 50,
-    difficulty: DifficultyRank.novice.toString(),
+    difficulty: Difficulty.novice.displayName,
     clearCondition: ClearCondition.winWhiteKnight.toString(),
   ),
   Challenge(
     id: 5,
     content: "Win in 3 moves",
     exp: 5,
-    difficulty: DifficultyRank.novice.toString(),
+    difficulty: Difficulty.novice.displayName,
     clearCondition: ClearCondition.win.toString(),
   ),
   Challenge(
     id: 6,
     content: "Achieve a draw against the dark wizard",
     exp: 5,
-    difficulty: DifficultyRank.whiteKnight.toString(),
+    difficulty: Difficulty.whiteKnight.displayName,
     clearCondition: ClearCondition.drawDarkWizard.toString(),
   ),
   Challenge(
@@ -82,7 +76,7 @@ final challengeData = [
     progress: 0,
     progressGoal: 3,
     exp: 25,
-    difficulty: DifficultyRank.darkWizard.toString(),
+    difficulty: Difficulty.whiteKnight.displayName,
     clearCondition: ClearCondition.winWithoutLosingWhiteKnight.toString(),
   ),
   Challenge(
@@ -91,7 +85,7 @@ final challengeData = [
     progress: 0,
     progressGoal: 2,
     exp: 50,
-    difficulty: DifficultyRank.darkWizard.toString(),
+    difficulty: Difficulty.darkWizard.displayName,
     clearCondition: ClearCondition.winWithoutLosingDarkWizard.toString(),
   ),
 ];
