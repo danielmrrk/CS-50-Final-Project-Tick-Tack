@@ -106,8 +106,8 @@ class StatisticDatabase {
       await db.update(
         challengeTable,
         {ChallengeField.progress: 0},
-        where: '${ChallengeField.clearCondition} = ?',
-        whereArgs: ['ClearCondition.winWithoutLosing$difficultyCondition'],
+        where: '${ChallengeField.clearCondition} = ? AND ${ChallengeField.cleared} = ?',
+        whereArgs: ['ClearCondition.winWithoutLosing$difficultyCondition', 0],
       );
     }
   }

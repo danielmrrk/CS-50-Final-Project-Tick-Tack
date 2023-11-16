@@ -147,8 +147,9 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
   }
 
   void onRemoveClearedChallenge(Challenge challenge, int index, BuildContext context) async {
-    await ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
+    bool rankUp = await ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
     _challenges.removeAt(index - 1);
+    print(_challenges.length);
     key.currentState!.removeItem(
       index,
       (context, animation) => SizeTransition(
@@ -166,7 +167,35 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
       ),
       duration: const Duration(milliseconds: 500),
     );
-    setState(() {});
+
+    setState(() {
+      if (rankUp) {
+        fetchNewChallengeData();
+      }
+    });
     // TODO: fetch new challenges after rankup
+  }
+
+  fetchNewChallengeData() async {
+    List<Challenge> challenges = await StatisticDatabase.instance.readAllShowableChallenges();
+    int firstCaptionElement = 1;
+    print(_challenges.length);
+    int firstIndex = _challenges.length;
+    List<Challenge> filteredChallenges = challenges.where((e) {
+      for (var challenge in _challenges) {
+        if (challenge.id == e.id) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
+    for (var challenge in filteredChallenges) {
+      _challenges.insert(firstIndex, challenge);
+      key.currentState!.insertItem(
+        firstIndex + firstCaptionElement,
+        duration: const Duration(milliseconds: 300),
+      );
+      firstIndex++;
+    }
   }
 }

@@ -72,7 +72,11 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     if (gameCount == null) {
       await _storage.write(key: difficultyKey, value: '1');
       state[difficultyKey] = '1';
-      state[resultKey] = '1';
+      if (state[resultKey] == null) {
+        state[resultKey] = '1';
+      } else {
+        state[resultKey] = (int.parse(state[resultKey]!) + 1).toString();
+      }
     } else {
       await _storage.write(key: difficultyKey, value: (int.parse(gameCount) + 1).toString());
       state[difficultyKey] = (int.parse(gameCount) + 1).toString();
@@ -85,7 +89,7 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     );
   }
 
-  Future<void> maybeUpdateUserStatus(Challenge challenge) async {
+  Future<bool> maybeUpdateUserStatus(Challenge challenge) async {
     final userExp = await _storage.read(key: kExpKey);
     final rank = await _storage.read(key: kRankKey);
     Difficulty difficulty = Difficulty.fromStorage(rank ?? "");
@@ -98,13 +102,19 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
           await _storage.write(key: kExpKey, value: (expAfterRankUp).toString());
           state[kExpKey] = (expAfterRankUp).toString();
           await _updateRank(rank);
+          await StatisticDatabase.instance.onCollectUpdateChallenge(challenge);
+          return true;
         } else {
           await _storage.write(key: kExpKey, value: (int.parse(userExp) + challenge.exp).toString());
           state[kExpKey] = (int.parse(userExp) + challenge.exp).toString();
         }
+      } else {
+        await _storage.write(key: kExpKey, value: ((int.parse(userExp) + challenge.exp).toString()).toString());
+        state[kExpKey] = ((int.parse(userExp) + challenge.exp).toString()).toString();
       }
     }
-    StatisticDatabase.instance.onCollectUpdateChallenge(challenge);
+    await StatisticDatabase.instance.onCollectUpdateChallenge(challenge);
+    return false;
   }
 
   Future<void> _updateRank(String? rank) async {
