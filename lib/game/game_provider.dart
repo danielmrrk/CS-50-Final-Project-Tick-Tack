@@ -35,7 +35,7 @@ class TimeService extends StateNotifier<int?> {
           state = state! - 1;
           CustomDialog.showGetDialog(
             title: "You lost on time. Good luck next time.",
-            content: CustomDialog.buildFixedGameDialogContent(),
+            content: CustomDialog.buildRestartGameDialogContent(),
           );
           timer.cancel();
           _userStatisticService.updateGameCount(
@@ -117,7 +117,7 @@ class GameService extends StateNotifier<List<List<String>>> {
       bool userHasWon = currentPlayer == _playerSymbol;
       CustomDialog.showGetDialog(
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
-        content: CustomDialog.buildFixedGameDialogContent(),
+        content: CustomDialog.buildRestartGameDialogContent(),
       );
       _userStatisticService.updateGameCount(difficulty.displayName, userHasWon ? kWinKey : kLossKey, (_moves / 2).ceil());
       return true;
@@ -125,7 +125,7 @@ class GameService extends StateNotifier<List<List<String>>> {
       _timeService.cancelTimer();
       CustomDialog.showGetDialog(
         title: "Getting a draw is sometimes the best.",
-        content: CustomDialog.buildFixedGameDialogContent(),
+        content: CustomDialog.buildRestartGameDialogContent(),
       );
       _userStatisticService.updateGameCount(
         difficulty.displayName,

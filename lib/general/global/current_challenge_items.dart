@@ -1,1 +1,0 @@
-// static final current_challenge_items = ;

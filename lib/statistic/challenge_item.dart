@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/database/statistic/challenge.dart';
-import 'package:tic_tac/database/statistic/statistic_database.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 
