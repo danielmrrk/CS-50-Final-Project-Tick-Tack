@@ -79,24 +79,37 @@ class StatisticDatabase {
     return result.map((json) => Challenge.fromJson(json)).toList();
   }
 
-  Future<void> onResultUpdateChallenge({required String resultKey, required String difficultyDisplayName}) async {
+  Future<void> onResultUpdateChallenge({required String resultKey, required String difficultyDisplayName, int? moves}) async {
     final db = await StatisticDatabase.instance.database;
-    final String clearConditionDisplay = difficultyDisplayName.replaceAll(' ', '');
+    final String difficultyCondition = difficultyDisplayName.replaceAll(' ', '');
     await db.rawQuery('''
     UPDATE $challengeTable
     SET ${ChallengeField.cleared} = 1
     WHERE (${ChallengeField.progress} IS NULL OR ${ChallengeField.progress} >= ${ChallengeField.challengeGoal} - 1)
-          AND (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' OR 
-          ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$clearConditionDisplay')
+          AND (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' 
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyCondition'
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}WithoutLosing$difficultyCondition' 
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}In${moves}Moves')
           AND ${ChallengeField.showChallenge} = 1;
 ''');
     await db.rawQuery('''
     UPDATE $challengeTable
     SET ${ChallengeField.progress} = ${ChallengeField.progress} + 1
-    WHERE (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$clearConditionDisplay')
+    WHERE (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' 
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyCondition'
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}WithoutLosing$difficultyCondition' 
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}In${moves}Moves')
           AND ${ChallengeField.progress} IS NOT NULL AND ${ChallengeField.progress} < ${ChallengeField.challengeGoal}
           AND ${ChallengeField.showChallenge} = 1;
           ''');
+    if (resultKey == kLossKey) {
+      await db.update(
+        challengeTable,
+        {ChallengeField.progress: 0},
+        where: '${ChallengeField.clearCondition} = ?',
+        whereArgs: ['ClearCondition.winWithoutLosing$difficultyCondition'],
+      );
+    }
   }
 
   Future<void> onCollectUpdateChallenge(Challenge challenge) async {

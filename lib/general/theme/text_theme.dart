@@ -92,6 +92,12 @@ class TTTextTheme {
     fontWeight: FontWeight.w500,
     color: Colors.white,
   );
+
+  static final bodySmallSemiBold = GoogleFonts.montserrat(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
 }
 
 class StrokeText {

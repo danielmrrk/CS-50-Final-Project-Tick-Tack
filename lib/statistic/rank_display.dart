@@ -53,8 +53,11 @@ class RankDisplay extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "${userStatistic?[kExpKey] ?? '0'} / "
-                    "${difficulty.expRequiredForRankUp}",
+                    difficulty == Difficulty.darkWizard &&
+                            int.tryParse(userStatistic?[kExpKey] ?? '0') == Difficulty.darkWizard.expRequiredForRankUp
+                        ? "MAXED OUT"
+                        : "${userStatistic?[kExpKey] ?? '0'} / "
+                            "${difficulty.expRequiredForRankUp}",
                     style: TTTextTheme.bodyMedium,
                   ),
                 ),

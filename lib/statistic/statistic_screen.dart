@@ -15,7 +15,6 @@ class StatisticScreen extends ConsumerStatefulWidget {
 }
 
 class StatisticScreenState extends ConsumerState<StatisticScreen> {
-  Map<String, String>? _userStatistic;
   List<Challenge> _challenges = [];
   final key = GlobalKey<AnimatedListState>();
   @override
@@ -26,7 +25,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _userStatistic = ref.watch(userStatisticProvider);
+    Map<String, String> userStatistic = ref.watch(userStatisticProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistic'),
@@ -38,7 +37,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Column(
               children: [
-                RankDisplay(userStatistic: _userStatistic),
+                RankDisplay(userStatistic: userStatistic),
                 const SizedBox(height: 24),
                 Expanded(
                   child: GridView.count(
@@ -49,29 +48,24 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
                     crossAxisSpacing: 8,
                     children: [
                       StatisticDisplay(
-                        userStatistic: _userStatistic,
-                        displayValue: _userStatistic?[kWinKey] ?? '0',
+                        userStatistic: userStatistic,
                         imagePath: 'assets/images/trophy.png',
-                        detailData: kWinKey,
-                        clickable: true,
+                        statisticKey: kWinKey,
                       ),
                       StatisticDisplay(
-                        userStatistic: _userStatistic,
-                        displayValue: _userStatistic?[kDrawKey] ?? '0',
+                        userStatistic: userStatistic,
                         imagePath: 'assets/images/balance-scale.png',
-                        detailData: kDrawKey,
-                        clickable: true,
+                        statisticKey: kDrawKey,
                       ),
                       StatisticDisplay(
-                        userStatistic: _userStatistic,
-                        displayValue: _userStatistic?[kLossKey] ?? '0',
+                        userStatistic: userStatistic,
                         imagePath: 'assets/images/skull.png',
-                        detailData: kLossKey,
-                        clickable: true,
+                        statisticKey: kLossKey,
                       ),
                       StatisticDisplay(
-                        displayValue: "${_userStatistic?[kWinRate] ?? '0'}%",
+                        userStatistic: userStatistic,
                         imagePath: 'assets/images/trophy_skull.png',
+                        statisticKey: kWinRate,
                       ),
                     ],
                   ),
@@ -153,7 +147,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
   }
 
   void onRemoveClearedChallenge(Challenge challenge, int index, BuildContext context) async {
-    ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
+    await ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
     _challenges.removeAt(index - 1);
     key.currentState!.removeItem(
       index,
@@ -165,14 +159,14 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
           key: ValueKey(challenge.content),
           challenge: challenge,
           onRemoveClearedChallenge: () {
-            setState(() {
-              onRemoveClearedChallenge(challenge, index, context);
-            });
+            onRemoveClearedChallenge(challenge, index, context);
           },
           setCleared: true,
         ),
       ),
       duration: const Duration(milliseconds: 500),
     );
+    setState(() {});
+    // TODO: fetch new challenges after rankup
   }
 }

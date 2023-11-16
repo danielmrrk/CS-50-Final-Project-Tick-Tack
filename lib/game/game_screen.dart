@@ -106,6 +106,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                               ref.read(userStatisticProvider.notifier).updateGameCount(
                                     widget.difficulty.displayName,
                                     kLossKey,
+                                    null,
                                   );
                               Get.to(
                                 () => const MainScreen(

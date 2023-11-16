@@ -2,23 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
-import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class StatisticDisplay extends StatefulWidget {
   const StatisticDisplay({
     super.key,
-    required this.displayValue,
-    this.detailData,
-    this.userStatistic,
+    required this.userStatistic,
+    required this.statisticKey,
     this.imagePath,
-    this.clickable = false,
   });
 
-  final String displayValue;
-  final Map<String, String>? userStatistic;
-  final String? detailData;
+  final Map<String, String> userStatistic;
+  final String statisticKey;
   final String? imagePath;
-  final bool clickable;
 
   @override
   State<StatisticDisplay> createState() => _StatisticDisplayState();
@@ -29,16 +24,14 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.clickable
-        ? GestureDetector(
-            onTap: () {
-              setState(() {
-                _showMainContent = !_showMainContent;
-              });
-            },
-            child: _showMainContent ? buildMainContent() : buildDetailedContent(),
-          )
-        : buildMainContent();
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _showMainContent = !_showMainContent;
+        });
+      },
+      child: _showMainContent ? buildMainContent() : buildDetailedContent(),
+    );
   }
 
   Widget buildMainContent() => Card(
@@ -56,8 +49,8 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
                 const Spacer(),
               ],
               Text(
-                widget.displayValue,
-                style: TTTextTheme.bodyStatisticDisplay(int.tryParse(widget.displayValue.replaceAll("%", "")) ?? 0),
+                widget.userStatistic[widget.statisticKey]!,
+                style: TTTextTheme.bodyStatisticDisplay(int.tryParse(widget.userStatistic[widget.statisticKey]!.replaceAll("%", ""))!),
               ),
             ],
           ),
@@ -69,27 +62,10 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
           borderRadius: BorderRadius.circular(12),
         ),
         color: TTColorTheme.onBackgroundDark,
-        child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              children: [displayDetailedContent(widget.detailData!)],
-            )),
+        child: Padding(padding: const EdgeInsets.all(16), child: displayDetailedContent(widget.statisticKey)),
       );
 
-  Widget displayDetailedContent(String gameResultKey) {
-    switch (gameResultKey) {
-      case kWinKey:
-        return getSpecificResultColumn(kWinKey);
-      case kDrawKey:
-        return getSpecificResultColumn(kDrawKey);
-      case kLossKey:
-        return getSpecificResultColumn(kLossKey);
-      default:
-        throw Exception("Invalid game result key");
-    }
-  }
-
-  Widget getSpecificResultColumn(String gameResultKey) {
+  Widget displayDetailedContent(String userStatisticKey) {
     return Column(
       children: [
         for (var rank in Difficulty.ranks)
@@ -97,14 +73,14 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
             children: [
               Text(
                 rank.displayName,
-                style: TTTextTheme.bodyMediumSemiBold,
+                style: TTTextTheme.bodySmallSemiBold,
               ),
               const Spacer(),
               Text(
-                widget.userStatistic?["$gameResultKey/${rank.displayName}"] != null
-                    ? widget.userStatistic!["$gameResultKey/${rank.displayName}"]!
+                widget.userStatistic["$userStatisticKey/${rank.displayName}"] != null
+                    ? widget.userStatistic["$userStatisticKey/${rank.displayName}"]!
                     : '0',
-                style: TTTextTheme.bodyMediumSemiBold,
+                style: TTTextTheme.bodySmallSemiBold,
               ),
             ],
           ),

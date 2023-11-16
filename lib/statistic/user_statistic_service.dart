@@ -27,8 +27,6 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     readAllUserStats();
   }
 
-  // TODO: change Map<String, String> to Map<String, dynamic>
-
   Future<void> readAllUserStats() async {
     Map<String, String> userStatistic = await _storage.readAll();
     if (userStatistic.isEmpty) {
@@ -38,15 +36,22 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     int drawCount = 0;
     int lossCount = 0;
     for (var rank in Difficulty.ranks) {
-      winCount += int.parse(userStatistic["$kWinKey/${rank.displayName}"] ?? '0');
+      int specificWinCount = int.parse(userStatistic["$kWinKey/${rank.displayName}"] ?? '0');
+      int specificLossCount = int.parse(userStatistic["$kLossKey/${rank.displayName}"] ?? '0');
+      winCount += specificWinCount;
       drawCount += int.parse(userStatistic["$kDrawKey/${rank.displayName}"] ?? '0');
-      lossCount += int.parse(userStatistic["$kLossKey/${rank.displayName}"] ?? '0');
+      lossCount += specificLossCount;
+      userStatistic["$kWinRate/${rank.displayName}"] = "${_calculateWinRate(specificWinCount, specificLossCount)}%";
     }
-    userStatistic[kWinRate] = winCount + lossCount == 0 ? '0' : (winCount * 100 ~/ (winCount + lossCount)).toString();
+    userStatistic[kWinRate] = "${_calculateWinRate(winCount, lossCount)}%";
     userStatistic[kWinKey] = winCount.toString();
     userStatistic[kDrawKey] = drawCount.toString();
     userStatistic[kLossKey] = lossCount.toString();
     state = userStatistic;
+  }
+
+  int _calculateWinRate(int winCount, int lossCount) {
+    return winCount + lossCount == 0 ? 0 : (winCount * 100 ~/ (winCount + lossCount));
   }
 
   Future<Map<String, String>> _initAndWriteData() async {
@@ -61,7 +66,7 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     return await _storage.readAll();
   }
 
-  Future<void> updateGameCount(String difficultyDisplayName, String resultKey) async {
+  Future<void> updateGameCount(String difficultyDisplayName, String resultKey, int? moves) async {
     final difficultyKey = "$resultKey/$difficultyDisplayName";
     final gameCount = await _storage.read(key: difficultyKey);
     if (gameCount == null) {
@@ -76,6 +81,7 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     StatisticDatabase.instance.onResultUpdateChallenge(
       resultKey: resultKey,
       difficultyDisplayName: difficultyDisplayName,
+      moves: moves,
     );
   }
 
@@ -86,14 +92,16 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     if (userExp == null) {
       await _storage.write(key: kExpKey, value: '0');
     } else {
-      final expAfterRankUp = int.parse(userExp) + challenge.exp - difficulty.expRequiredForRankUp;
-      if (expAfterRankUp >= 0) {
-        await _storage.write(key: kExpKey, value: (expAfterRankUp).toString());
-        state[kExpKey] = (expAfterRankUp).toString();
-        _updateRank(rank);
-      } else {
-        await _storage.write(key: kExpKey, value: (int.parse(userExp) + challenge.exp).toString());
-        state[kExpKey] = (int.parse(userExp) + challenge.exp).toString();
+      if (difficulty != Difficulty.darkWizard) {
+        final expAfterRankUp = int.parse(userExp) + challenge.exp - difficulty.expRequiredForRankUp;
+        if (expAfterRankUp >= 0) {
+          await _storage.write(key: kExpKey, value: (expAfterRankUp).toString());
+          state[kExpKey] = (expAfterRankUp).toString();
+          await _updateRank(rank);
+        } else {
+          await _storage.write(key: kExpKey, value: (int.parse(userExp) + challenge.exp).toString());
+          state[kExpKey] = (int.parse(userExp) + challenge.exp).toString();
+        }
       }
     }
     StatisticDatabase.instance.onCollectUpdateChallenge(challenge);

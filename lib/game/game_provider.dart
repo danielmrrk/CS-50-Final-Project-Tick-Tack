@@ -38,7 +38,11 @@ class TimeService extends StateNotifier<int?> {
             content: CustomDialog.buildFixedGameDialogContent(),
           );
           timer.cancel();
-          _userStatisticService.updateGameCount(difficultyDisplay.displayName, kLossKey);
+          _userStatisticService.updateGameCount(
+            difficultyDisplay.displayName,
+            kLossKey,
+            null,
+          );
         }
       }
     });
@@ -115,10 +119,7 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      _userStatisticService.updateGameCount(
-        difficulty.displayName,
-        userHasWon ? kWinKey : kLossKey,
-      );
+      _userStatisticService.updateGameCount(difficulty.displayName, userHasWon ? kWinKey : kLossKey, (_moves / 2).ceil());
       return true;
     } else if (_moves == 9) {
       _timeService.cancelTimer();
@@ -126,7 +127,11 @@ class GameService extends StateNotifier<List<List<String>>> {
         title: "Getting a draw is sometimes the best.",
         content: CustomDialog.buildFixedGameDialogContent(),
       );
-      _userStatisticService.updateGameCount(difficulty.displayName, kDrawKey);
+      _userStatisticService.updateGameCount(
+        difficulty.displayName,
+        kDrawKey,
+        null,
+      );
       return true;
     }
     return false;
