@@ -9,6 +9,7 @@ import 'package:tic_tac/general/util/snackbar.dart';
 import 'package:tic_tac/main_sceen/difficulty.dart';
 import 'package:tic_tac/main_sceen/difficulty_grid.dart';
 import 'package:tic_tac/statistic/statistic_screen.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 final images = [
   "grey_drunkard.png",
@@ -45,6 +46,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    ref.read(userStatisticProvider); // init state before
     precache();
     _reset = widget.reset;
     if (_reset) {
@@ -109,7 +111,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
                       ref.read(timeProvider.notifier).startTimer(_selectedDifficulty!);
 
-                      Get.to(() => GameScreen(difficultyDisplay: _selectedDifficulty!));
+                      Get.to(() => GameScreen(difficulty: _selectedDifficulty!));
                     },
                   ),
                   const SizedBox(height: 8),

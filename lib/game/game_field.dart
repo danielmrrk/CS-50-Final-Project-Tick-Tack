@@ -43,7 +43,7 @@ class _GameFieldState extends ConsumerState<GameField> {
           int col = index % 3;
           return GestureDetector(
             onTap: () {
-              if (!_isOver) {
+              if (!_isOver && ref.watch(gameProvider)[row][col] == "' '") {
                 _isOver = ref.read(gameProvider.notifier).onPlayerPlacedMove(row, col, widget.difficultyDisplay);
                 setState(() {});
               }

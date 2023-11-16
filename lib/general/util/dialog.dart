@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tic_tac/database/statistic/statistic_database.dart';
 
 import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
@@ -27,7 +26,7 @@ class CustomDialog {
         ),
       );
 
-  static Widget buildFixedGameDialogContent() => Container(
+  static Widget buildRestartGameDialogContent() => Container(
         width: 272,
         padding: const EdgeInsets.fromLTRB(8, 0, 8, 20),
         child: Column(

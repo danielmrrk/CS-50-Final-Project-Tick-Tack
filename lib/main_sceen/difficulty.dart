@@ -9,7 +9,8 @@ class Difficulty {
     this.focused,
     this.difficultyPercentage,
     this.expRequiredForRankUp,
-    this.color,
+    this.primaryColor,
+    this.secondaryColor,
   );
   final String displayName;
   final String time;
@@ -17,7 +18,8 @@ class Difficulty {
   bool focused;
   final int difficultyPercentage;
   final int expRequiredForRankUp;
-  final Color color;
+  final Color primaryColor;
+  final Color secondaryColor;
 
   static final drunkard = Difficulty(
     "Drunkard",
@@ -26,7 +28,8 @@ class Difficulty {
     false,
     50,
     30,
-    TTColorTheme.drunkardHighlight,
+    TTColorTheme.drunkardPrimary,
+    TTColorTheme.drunkardSecondary,
   ); // unicode for ∞
   static final novice = Difficulty(
     "Novice",
@@ -35,25 +38,28 @@ class Difficulty {
     false,
     50,
     40,
-    TTColorTheme.noviceHighlight,
+    TTColorTheme.novicePrimary,
+    TTColorTheme.noviceSecondary,
   );
   static final whiteKnight = Difficulty(
     "White Knight",
     "5",
     "white_knight",
     false,
-    80,
+    50,
     60,
-    TTColorTheme.whiteKnightHighlight,
+    TTColorTheme.whiteKnightPrimary,
+    TTColorTheme.whiteKnightSecondary,
   );
   static final darkWizard = Difficulty(
     "Dark Wizard",
     "3",
     "dark_wizard",
     false,
-    100,
+    50,
     80,
-    TTColorTheme.darkWizardHighlight,
+    TTColorTheme.darkWizardPrimary,
+    TTColorTheme.darkWizardSecondary,
   );
 
   static Difficulty fromStorage(String rank) {

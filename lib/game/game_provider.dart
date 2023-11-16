@@ -8,11 +8,16 @@ import "package:tic_tac/main_sceen/difficulty.dart";
 import 'package:tic_tac/service/model_service.dart';
 import "package:tic_tac/statistic/user_statistic_service.dart";
 
-final timeProvider = StateNotifierProvider<TimeService, int?>((ref) => TimeService());
+final timeProvider = StateNotifierProvider<TimeService, int?>((ref) {
+  ref.read(userStatisticProvider.notifier);
+  return TimeService(ref.read(userStatisticProvider.notifier));
+});
 
 class TimeService extends StateNotifier<int?> {
-  TimeService() : super(null);
+  TimeService(this._userStatisticService) : super(null);
   Timer? _timer;
+
+  final UserStatisticService _userStatisticService;
 
   @override
   void dispose() {
@@ -30,10 +35,14 @@ class TimeService extends StateNotifier<int?> {
           state = state! - 1;
           CustomDialog.showGetDialog(
             title: "You lost on time. Good luck next time.",
-            content: CustomDialog.buildFixedGameDialogContent(),
+            content: CustomDialog.buildRestartGameDialogContent(),
           );
           timer.cancel();
-          UserStatisticService.instance.updateGameCount(difficultyDisplay, kLossKey);
+          _userStatisticService.updateGameCount(
+            difficultyDisplay.displayName,
+            kLossKey,
+            null,
+          );
         }
       }
     });
@@ -50,11 +59,14 @@ class TimeService extends StateNotifier<int?> {
 }
 
 final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref) {
-  return GameService(ref.read(timeProvider.notifier));
+  return GameService(
+    ref.read(timeProvider.notifier),
+    ref.read(userStatisticProvider.notifier),
+  );
 });
 
 class GameService extends StateNotifier<List<List<String>>> {
-  GameService._(this._timeService, this.compSymbol, this._playerSymbol)
+  GameService._(this._timeService, this._userStatisticService, this.compSymbol, this._playerSymbol)
       : super(
           List.generate(
             3,
@@ -62,17 +74,18 @@ class GameService extends StateNotifier<List<List<String>>> {
           ),
         );
 
-  factory GameService(TimeService timeService) {
+  factory GameService(TimeService timeService, UserStatisticService userStatisticService) {
     bool randomTurn = Random().nextInt(2) == 0;
     String compSymbol = randomTurn ? "O" : "X";
     String playerSymbol = randomTurn ? "X" : "O";
-    return GameService._(timeService, compSymbol, playerSymbol);
+    return GameService._(timeService, userStatisticService, compSymbol, playerSymbol);
   }
 
   int _moves = 0;
   String compSymbol;
   String _playerSymbol;
   final TimeService _timeService;
+  final UserStatisticService _userStatisticService;
 
   bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
     _onMovePlaced(_playerSymbol, row, col);
@@ -98,28 +111,26 @@ class GameService extends StateNotifier<List<List<String>>> {
     });
   }
 
-  bool _checkGameStatus(String currentPlayer, Difficulty difficultyDisplay) {
+  bool _checkGameStatus(String currentPlayer, Difficulty difficulty) {
     if (_checkWin(currentPlayer)) {
       _timeService.cancelTimer();
       bool userHasWon = currentPlayer == _playerSymbol;
       CustomDialog.showGetDialog(
         title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
-        content: CustomDialog.buildFixedGameDialogContent(),
+        content: CustomDialog.buildRestartGameDialogContent(),
       );
-      UserStatisticService.instance.updateGameCount(
-        difficultyDisplay,
-        userHasWon ? kWinKey : kLossKey,
-      );
+      _userStatisticService.updateGameCount(difficulty.displayName, userHasWon ? kWinKey : kLossKey, (_moves / 2).ceil());
       return true;
     } else if (_moves == 9) {
       _timeService.cancelTimer();
       CustomDialog.showGetDialog(
         title: "Getting a draw is sometimes the best.",
-        content: CustomDialog.buildFixedGameDialogContent(),
+        content: CustomDialog.buildRestartGameDialogContent(),
       );
-      UserStatisticService.instance.updateGameCount(
-        difficultyDisplay,
+      _userStatisticService.updateGameCount(
+        difficulty.displayName,
         kDrawKey,
+        null,
       );
       return true;
     }

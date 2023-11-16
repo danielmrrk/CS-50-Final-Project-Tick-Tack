@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:tic_tac/database/statistic/challenge.dart';
 import 'package:tic_tac/database/statistic/challenge_data.dart';
+import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class StatisticDatabase {
   static final StatisticDatabase instance = StatisticDatabase._init();
@@ -78,49 +79,55 @@ class StatisticDatabase {
     return result.map((json) => Challenge.fromJson(json)).toList();
   }
 
-  Future<int> updateChallenge(
-      {required Challenge challenge,
-      String? content,
-      int? exp,
-      bool? cleared,
-      int? progress,
-      int? progressGoal,
-      bool? showChallenge,
-      String? difficulty,
-      String? clearCondition}) async {
-    final db = await instance.database;
-    if (content != null) {
-      challenge = challenge.copy(content: content);
-    } else if (exp != null) {
-      challenge = challenge.copy(exp: exp);
-    } else if (progressGoal != null) {
-      challenge = challenge.copy(progressGoal: progressGoal);
-    } else if (difficulty != null) {
-      challenge = challenge.copy(difficulty: difficulty);
+  Future<void> onResultUpdateChallenge({required String resultKey, required String difficultyDisplayName, int? moves}) async {
+    final db = await StatisticDatabase.instance.database;
+    final String difficultyCondition = difficultyDisplayName.replaceAll(' ', '');
+    await db.rawQuery('''
+    UPDATE $challengeTable
+    SET ${ChallengeField.cleared} = 1
+    WHERE (${ChallengeField.progress} IS NULL OR ${ChallengeField.progress} >= ${ChallengeField.challengeGoal} - 1)
+          AND (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' 
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyCondition'
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}WithoutLosing$difficultyCondition' 
+          OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}In${moves}Moves')
+          AND ${ChallengeField.showChallenge} = 1;
+''');
+    await db.rawQuery('''
+    UPDATE $challengeTable
+    SET ${ChallengeField.progress} = ${ChallengeField.progress} + 1
+    WHERE (${ChallengeField.clearCondition} = 'ClearCondition.$resultKey' 
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.$resultKey$difficultyCondition'
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}WithoutLosing$difficultyCondition' 
+    OR ${ChallengeField.clearCondition} = 'ClearCondition.${resultKey}In${moves}Moves')
+          AND ${ChallengeField.progress} IS NOT NULL AND ${ChallengeField.progress} < ${ChallengeField.challengeGoal}
+          AND ${ChallengeField.showChallenge} = 1;
+          ''');
+    if (resultKey == kLossKey) {
+      await db.update(
+        challengeTable,
+        {ChallengeField.progress: 0},
+        where: '${ChallengeField.clearCondition} = ? AND ${ChallengeField.cleared} = ?',
+        whereArgs: ['ClearCondition.winWithoutLosing$difficultyCondition', 0],
+      );
     }
-    if (progress != null) {
-      challenge = challenge.copy(progress: progress);
-    }
-    if (cleared != null) {
-      challenge = challenge.copy(cleared: cleared);
-    }
-    if (showChallenge != null) {
-      challenge = challenge.copy(showChallenge: showChallenge);
-    }
-    return db.update(
-      challengeTable,
-      challenge.toJson(),
-      where: '${ChallengeField.id} == ?',
-      whereArgs: [challenge.id],
-    );
   }
 
-  Future<int> deleteChallenge(int id) async {
-    final db = await instance.database;
-    return await db.delete(
+  Future<void> onCollectUpdateChallenge(Challenge challenge) async {
+    final db = await StatisticDatabase.instance.database;
+    db.rawQuery('''
+    UPDATE $challengeTable
+    SET ${ChallengeField.showChallenge} = 0
+    WHERE ${ChallengeField.id} = ${challenge.id} AND ${ChallengeField.cleared} = 1;
+''');
+  }
+
+  Future<void> updateUnshowableChallenges(String difficultyDisplayName) async {
+    final db = await StatisticDatabase.instance.database;
+    db.update(
       challengeTable,
-      where: '${ChallengeField.id} == ?',
-      whereArgs: [id],
+      {ChallengeField.showChallenge: 1},
+      where: "${ChallengeField.difficulty} = ?",
+      whereArgs: [difficultyDisplayName],
     );
   }
 
