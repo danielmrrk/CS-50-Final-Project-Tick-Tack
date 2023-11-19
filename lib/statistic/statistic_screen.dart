@@ -40,18 +40,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerPro
       _scaleController,
     );
 
-    // _progressController = AnimationController(
-    //   vsync: this,
-    //   duration: const Duration(milliseconds: 500),
-    // );
-
-    // _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
-    //   CurvedAnimation(
-    //     parent: _progressController,
-    //     curve: Curves.easeInOut,
-    //   ),
-    // );
-
     fetchChallenges();
     super.initState();
   }
@@ -60,7 +48,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerPro
   void dispose() {
     super.dispose();
     _scaleController.dispose();
-    // _progressController.dispose();
   }
 
   @override
@@ -88,8 +75,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerPro
                 children: [
                   RankDisplay(
                     userStatistic: userStatistic,
-                    // progressController: _progressController,
-                    // progressAnimation: _progressAnimation,
                   ),
                   const SizedBox(height: 24),
                   Expanded(
@@ -227,23 +212,18 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerPro
         child: ChallengeItem(
           key: ValueKey(challenge.content),
           challenge: challenge,
-          onRemoveClearedChallenge: () {
-            onRemoveClearedChallenge(challenge, index, context);
-          },
-          cleared: false,
-          setCleared: true,
+          onRemoveClearedChallenge: () {},
+          cleared: true, // temporarly in the db that's not the case anymore
         ),
       ),
       duration: const Duration(milliseconds: 500),
     );
-    // _progressController.forward.delayed(const Duration(milliseconds: 200));
 
     setState(() {
       if (rankUp) {
         fetchNewChallengeData();
       }
     });
-    // TODO: fetch new challenges after rankup
   }
 
   fetchNewChallengeData() async {
