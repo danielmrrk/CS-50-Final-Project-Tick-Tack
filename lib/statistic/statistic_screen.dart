@@ -25,8 +25,6 @@ class StatisticScreen extends ConsumerStatefulWidget {
 class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
-  // late AnimationController _progressController;
-  // late Animation<double> _progressAnimation;
 
   List<Challenge> _challenges = [];
   final key = GlobalKey<AnimatedListState>();
