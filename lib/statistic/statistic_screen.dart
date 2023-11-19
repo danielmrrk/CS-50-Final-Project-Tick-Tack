@@ -10,19 +10,44 @@ import 'package:tic_tac/statistic/rank_display.dart';
 import 'package:tic_tac/statistic/statistic_display.dart';
 import 'package:tic_tac/statistic/user_statistic_service.dart';
 
+extension on VoidCallback {
+  Future<void> delayed(Duration duration) async {
+    await Future.delayed(duration, this);
+  }
+}
+
 class StatisticScreen extends ConsumerStatefulWidget {
   const StatisticScreen({super.key});
   @override
   StatisticScreenState createState() => StatisticScreenState();
 }
 
-class StatisticScreenState extends ConsumerState<StatisticScreen> {
+class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+  // late AnimationController _progressController;
+  // late Animation<double> _progressAnimation;
+
   List<Challenge> _challenges = [];
   final key = GlobalKey<AnimatedListState>();
   @override
   void initState() {
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+    _scaleAnimation = Tween(begin: 1.0, end: 1.04).animate(
+      _scaleController,
+    );
+
     fetchChallenges();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scaleController.dispose();
   }
 
   @override
@@ -48,7 +73,9 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Column(
                 children: [
-                  RankDisplay(userStatistic: userStatistic),
+                  RankDisplay(
+                    userStatistic: userStatistic,
+                  ),
                   const SizedBox(height: 24),
                   Expanded(
                     child: GridView.count(
@@ -106,22 +133,28 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
                         controller: controller,
                         initialItemCount: _challenges.length + 1,
                         itemBuilder: ((context, index, animation) {
-                          return index == 0
-                              ? Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text(
-                                    "Mastery Challenges",
-                                    style: TTTextTheme.strikingTitle,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                )
-                              : ChallengeItem(
-                                  key: ValueKey(_challenges[index - 1].content),
-                                  challenge: _challenges[index - 1],
-                                  onRemoveClearedChallenge: () {
-                                    onRemoveClearedChallenge(_challenges[index - 1], index, context);
-                                  },
-                                );
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                "Mastery Challenges",
+                                style: TTTextTheme.strikingTitle,
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          } else {
+                            bool cleared = _challenges[index - 1].cleared && _challenges[index - 1].showChallenge;
+                            if (cleared) {
+                              return AnimatedBuilder(
+                                animation: _scaleAnimation,
+                                builder: (context, child) => Transform.scale(
+                                  scale: _scaleAnimation.value,
+                                  child: buildChallengeItem(index, cleared),
+                                ),
+                              );
+                            }
+                            return buildChallengeItem(index, cleared);
+                          }
                         }),
                       )
                     : SingleChildScrollView(
@@ -158,6 +191,15 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
     });
   }
 
+  Widget buildChallengeItem(int index, bool cleared) => ChallengeItem(
+        key: ValueKey(_challenges[index - 1].content),
+        challenge: _challenges[index - 1],
+        cleared: cleared,
+        onRemoveClearedChallenge: () {
+          onRemoveClearedChallenge(_challenges[index - 1], index, context);
+        },
+      );
+
   void onRemoveClearedChallenge(Challenge challenge, int index, BuildContext context) async {
     bool rankUp = await ref.read(userStatisticProvider.notifier).maybeUpdateUserStatus(challenge);
     _challenges.removeAt(index - 1);
@@ -170,10 +212,8 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
         child: ChallengeItem(
           key: ValueKey(challenge.content),
           challenge: challenge,
-          onRemoveClearedChallenge: () {
-            onRemoveClearedChallenge(challenge, index, context);
-          },
-          setCleared: true,
+          onRemoveClearedChallenge: () {},
+          cleared: true, // temporarly in the db that's not the case anymore
         ),
       ),
       duration: const Duration(milliseconds: 500),
@@ -184,7 +224,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> {
         fetchNewChallengeData();
       }
     });
-    // TODO: fetch new challenges after rankup
   }
 
   fetchNewChallengeData() async {

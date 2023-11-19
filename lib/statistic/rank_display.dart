@@ -6,7 +6,10 @@ import 'package:tic_tac/statistic/exp_progress_bar.dart';
 import 'package:tic_tac/statistic/user_statistic_service.dart';
 
 class RankDisplay extends StatelessWidget {
-  const RankDisplay({super.key, required this.userStatistic});
+  const RankDisplay({
+    super.key,
+    required this.userStatistic,
+  });
   final double strokeHeight = 4;
   final Map<String, String> userStatistic;
 
@@ -57,7 +60,13 @@ class RankDisplay extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                      left: 0, bottom: 0, child: ExpProgresBar(difficulty: difficulty, exp: int.tryParse(userStatistic[kExpKey]!) ?? 0)),
+                    left: 0,
+                    bottom: 0,
+                    child: ExpProgresBar(
+                      difficulty: difficulty,
+                      exp: int.tryParse(userStatistic[kExpKey]!) ?? 0,
+                    ),
+                  ),
                   Text(
                     difficulty == Difficulty.darkWizard &&
                             int.tryParse(userStatistic[kExpKey] ?? '0') == Difficulty.darkWizard.expRequiredForRankUp
