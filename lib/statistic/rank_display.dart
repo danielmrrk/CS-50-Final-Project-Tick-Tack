@@ -9,13 +9,9 @@ class RankDisplay extends StatelessWidget {
   const RankDisplay({
     super.key,
     required this.userStatistic,
-    // required this.progressController,
-    // required this.progressAnimation,
   });
   final double strokeHeight = 4;
   final Map<String, String> userStatistic;
-  // final AnimationController progressController;
-  // final Animation<double> progressAnimation;
 
   @override
   Widget build(BuildContext context) {
