@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,9 +28,11 @@ class GameScreen extends ConsumerStatefulWidget {
 
 class _GameScreenState extends ConsumerState<GameScreen> {
   int? _start;
+  late int _conversationIndex;
 
   @override
   void initState() {
+    _conversationIndex = Random().nextInt(widget.difficulty.conversationData.length);
     super.initState();
   }
 
@@ -55,13 +59,17 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     width: 164,
                   ),
                   const SizedBox(width: 24),
-                  const SpeechBubble(dialogue: "Who dares to challenge me. Bring it on!"),
+                  SpeechBubble(
+                    opacity: 1,
+                    dialogue: widget.difficulty.conversationData[_conversationIndex],
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: GameField(
                 difficultyDisplay: widget.difficulty,
+                showNewMessage: showNewMessage,
               ),
             ),
             const SizedBox(height: 60),
@@ -110,6 +118,21 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         ),
       ),
     );
+  }
+
+  void showNewMessage() {
+    int conversationIndex;
+    int rep = 0;
+    do {
+      conversationIndex = Random().nextInt(
+        widget.difficulty.conversationData.length,
+      );
+      rep++;
+      if (rep > 100) break;
+    } while (_conversationIndex == conversationIndex);
+    setState(() {
+      _conversationIndex = conversationIndex;
+    });
   }
 
   void showGiveUpDialog() {

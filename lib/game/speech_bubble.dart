@@ -4,9 +4,14 @@ import 'package:tic_tac/general/theme/text_theme.dart';
 import 'package:tic_tac/general/util/triangle.dart';
 
 class SpeechBubble extends StatelessWidget {
-  const SpeechBubble({super.key, required this.dialogue});
+  const SpeechBubble({
+    super.key,
+    required this.dialogue,
+    required this.opacity,
+  });
 
   final String dialogue;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +32,14 @@ class SpeechBubble extends StatelessWidget {
           width: 204,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Text(
-              dialogue,
-              style: TTTextTheme.bodyLargeSemiBold,
-              textAlign: TextAlign.left,
+            child: AnimatedOpacity(
+              opacity: opacity,
+              duration: const Duration(milliseconds: 500),
+              child: Text(
+                dialogue,
+                style: TTTextTheme.bodyLargeSemiBold,
+                textAlign: TextAlign.left,
+              ),
             ),
           ),
         )

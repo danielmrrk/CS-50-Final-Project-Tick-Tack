@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac/general/theme/color_theme.dart';
+import 'package:tic_tac/main_sceen/conversation_data.dart';
 
 class Difficulty {
   Difficulty(
@@ -11,6 +12,7 @@ class Difficulty {
     this.expRequiredForRankUp,
     this.primaryColor,
     this.secondaryColor,
+    this.conversationData,
   );
   final String displayName;
   final String time;
@@ -20,6 +22,7 @@ class Difficulty {
   final int expRequiredForRankUp;
   final Color primaryColor;
   final Color secondaryColor;
+  final List<String> conversationData;
 
   static final drunkard = Difficulty(
     "Drunkard",
@@ -30,17 +33,10 @@ class Difficulty {
     30,
     TTColorTheme.drunkardPrimary,
     TTColorTheme.drunkardSecondary,
+    drunkardConversation,
   ); // unicode for ∞
-  static final novice = Difficulty(
-    "Novice",
-    "10",
-    "novice",
-    false,
-    50,
-    40,
-    TTColorTheme.novicePrimary,
-    TTColorTheme.noviceSecondary,
-  );
+  static final novice =
+      Difficulty("Novice", "10", "novice", false, 50, 40, TTColorTheme.novicePrimary, TTColorTheme.noviceSecondary, noviceConversation);
   static final whiteKnight = Difficulty(
     "White Knight",
     "5",
@@ -50,6 +46,7 @@ class Difficulty {
     60,
     TTColorTheme.whiteKnightPrimary,
     TTColorTheme.whiteKnightSecondary,
+    whiteKnightConversation,
   );
   static final darkWizard = Difficulty(
     "Dark Wizard",
@@ -60,6 +57,7 @@ class Difficulty {
     80,
     TTColorTheme.darkWizardPrimary,
     TTColorTheme.darkWizardSecondary,
+    darkWizardConversation,
   );
 
   static Difficulty fromStorage(String rank) {
@@ -77,5 +75,10 @@ class Difficulty {
     }
   }
 
-  static final ranks = [drunkard, novice, whiteKnight, darkWizard];
+  static final ranks = [
+    drunkard,
+    novice,
+    whiteKnight,
+    darkWizard,
+  ];
 }

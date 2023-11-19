@@ -10,19 +10,13 @@ import 'package:tic_tac/statistic/rank_display.dart';
 import 'package:tic_tac/statistic/statistic_display.dart';
 import 'package:tic_tac/statistic/user_statistic_service.dart';
 
-extension on VoidCallback {
-  Future<void> delayed(Duration duration) async {
-    await Future.delayed(duration, this);
-  }
-}
-
 class StatisticScreen extends ConsumerStatefulWidget {
   const StatisticScreen({super.key});
   @override
   StatisticScreenState createState() => StatisticScreenState();
 }
 
-class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerProviderStateMixin {
+class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
@@ -32,7 +26,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with TickerPro
   void initState() {
     _scaleController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
     )..repeat(reverse: true);
     _scaleAnimation = Tween(begin: 1.0, end: 1.04).animate(
       _scaleController,

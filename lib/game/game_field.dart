@@ -10,9 +10,11 @@ class GameField extends ConsumerStatefulWidget {
   const GameField({
     super.key,
     required this.difficultyDisplay,
+    required this.showNewMessage,
   });
 
   final Difficulty difficultyDisplay;
+  final VoidCallback showNewMessage;
 
   @override
   ConsumerState<GameField> createState() => _GameFieldState();
@@ -42,10 +44,10 @@ class _GameFieldState extends ConsumerState<GameField> {
           int row = index ~/ 3;
           int col = index % 3;
           return GestureDetector(
-            onTap: () {
+            onTap: () async {
               if (!_isOver && ref.watch(gameProvider)[row][col] == "' '") {
-                _isOver = ref.read(gameProvider.notifier).onPlayerPlacedMove(row, col, widget.difficultyDisplay);
-                setState(() {});
+                _isOver = await ref.read(gameProvider.notifier).onPlayerPlacedMove(row, col, widget.difficultyDisplay);
+                widget.showNewMessage();
               }
             },
             child: Container(
