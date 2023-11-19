@@ -14,7 +14,8 @@ class ExpProgresBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double expWidth = 200 * (exp / difficulty.expRequiredForRankUp);
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 800),
       alignment: Alignment.centerLeft,
       height: 28,
       width: expWidth,

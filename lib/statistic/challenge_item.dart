@@ -8,19 +8,20 @@ class ChallengeItem extends StatelessWidget {
     super.key,
     required this.challenge,
     required this.onRemoveClearedChallenge,
+    required this.cleared,
     this.setCleared = false,
   });
 
   final Challenge challenge;
   final Function onRemoveClearedChallenge;
   final bool setCleared;
+  final bool cleared;
 
   @override
   Widget build(BuildContext context) {
-    bool cleared = (challenge.cleared && challenge.showChallenge) || setCleared;
     return InkWell(
       onTap: () {
-        if (cleared) {
+        if (cleared || setCleared) {
           onRemoveClearedChallenge();
         }
       },
