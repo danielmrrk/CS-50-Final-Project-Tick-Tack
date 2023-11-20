@@ -28,6 +28,10 @@ final images = [
   "dark_wizard.png",
   "edited_dark_wizard.png",
   "rank_dark_wizard.png",
+  "trophy.png",
+  "balance-scale.png",
+  "skull.png",
+  "trophy_skull.png",
 ];
 
 class MainScreen extends ConsumerStatefulWidget {

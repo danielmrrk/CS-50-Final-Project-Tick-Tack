@@ -131,15 +131,18 @@ class StatisticDatabase {
     );
   }
 
-  Future<int> deleteChallengeTable() async {
+  Future<void> deleteChallengeTable() async {
     final db = await instance.database;
-    return await db.delete(
-      challengeTable,
-    );
+    await db.execute('DROP TABLE IF EXISTS $challengeTable');
   }
 
   Future<void> close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  Future<void> resetChallenges() async {
+    await deleteChallengeTable();
+    await _createDatabaseWithContent(await instance.database, 1);
   }
 }

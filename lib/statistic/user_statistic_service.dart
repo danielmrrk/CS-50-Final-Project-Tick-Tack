@@ -30,7 +30,7 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
   Future<void> readAllUserStats() async {
     Map<String, String> userStatistic = await _storage.readAll();
     if (userStatistic.isEmpty) {
-      userStatistic = await _initAndWriteData();
+      userStatistic = await _initWithFreshData();
     }
     int winCount = 0;
     int drawCount = 0;
@@ -54,13 +54,16 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
     return winCount + lossCount == 0 ? 0 : (winCount * 100 ~/ (winCount + lossCount));
   }
 
-  Future<Map<String, String>> _initAndWriteData() async {
+  Future<Map<String, String>> _initWithFreshData() async {
     for (var rank in Difficulty.ranks) {
       String rankKey = "$kWinKey/${rank.displayName}";
       _storage.write(key: "$kWinKey/$rankKey", value: '0');
       _storage.write(key: "$kDrawKey/$rankKey", value: '0');
       _storage.write(key: "$kLossKey/$rankKey", value: '0');
     }
+    _storage.write(key: kWinKey, value: '0');
+    _storage.write(key: kDrawKey, value: '0');
+    _storage.write(key: kLossKey, value: '0');
     _storage.write(key: kRankKey, value: 'Drunkard');
     _storage.write(key: kExpKey, value: '0');
     return await _storage.readAll();
@@ -81,6 +84,11 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
       await _storage.write(key: difficultyKey, value: (int.parse(gameCount) + 1).toString());
       state[difficultyKey] = (int.parse(gameCount) + 1).toString();
       state[resultKey] = (int.parse(state[resultKey]!) + 1).toString();
+    }
+    if (resultKey == kLossKey || resultKey == kWinKey) {
+      state[kWinRate] = "${_calculateWinRate(int.tryParse(state[kWinKey]!)!, int.tryParse(state[kLossKey]!)!)}%";
+      state["$kWinRate/$difficultyDisplayName"] =
+          "${_calculateWinRate(int.tryParse(state["$kWinKey/$difficultyDisplayName"]!)!, int.tryParse(state["$kLossKey/$difficultyDisplayName"]!)!)}%";
     }
     StatisticDatabase.instance.onResultUpdateChallenge(
       resultKey: resultKey,
@@ -138,5 +146,10 @@ class UserStatisticService extends StateNotifier<Map<String, String>> {
       state[kRankKey] = rank;
       await StatisticDatabase.instance.updateUnshowableChallenges(rank);
     }
+  }
+
+  Future<void> resetUserStatistic() async {
+    await StatisticDatabase.instance.resetChallenges();
+    state = await _initWithFreshData();
   }
 }
