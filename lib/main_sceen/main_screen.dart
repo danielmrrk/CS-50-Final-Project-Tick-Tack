@@ -49,8 +49,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    ref.read(userStatisticProvider); // init state before
+    WidgetsBinding.instance.addObserver(this); // init state before
     precache();
     _reset = widget.reset;
     if (_reset) {
@@ -60,6 +59,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WidgetsBindingObse
       _reset = false;
       ref.read(gameProvider.notifier).clear();
     }
+    ref.read(userStatisticProvider);
     super.initState();
   }
 

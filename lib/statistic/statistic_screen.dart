@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:tic_tac/database/statistic/challenge.dart';
-import 'package:tic_tac/database/statistic/challenge_data.dart';
+
 import 'package:tic_tac/database/statistic/statistic_database.dart';
 import 'package:tic_tac/general/theme/button_theme.dart';
 import 'package:tic_tac/general/theme/text_theme.dart';
@@ -24,6 +24,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTic
 
   List<Challenge> _challenges = [];
   final key = GlobalKey<AnimatedListState>();
+  late Map<String, String> userStatistic;
   @override
   void initState() {
     _scaleController = AnimationController(
@@ -49,7 +50,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    Map<String, String> userStatistic = ref.watch(userStatisticProvider);
+    userStatistic = ref.watch(userStatisticProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Statistic'),
@@ -156,7 +157,6 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTic
                           }),
                         )
                       : SingleChildScrollView(
-                          key: key,
                           controller: controller,
                           child: Column(children: [
                             Padding(
@@ -175,16 +175,13 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTic
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 29, horizontal: 36),
-                              child: const TTButton(title: "Reset").fullWidthButton(() async {
-                                await ref.read(userStatisticProvider.notifier).resetUserStatistic();
-                                for (int i = 0; i < challengeData.length; i++) {
-                                  _challenges.insert(i, challengeData[i]);
-                                  key.currentState!.insertItem(
-                                    i + 1,
-                                    duration: const Duration(milliseconds: 300),
-                                  );
-                                }
-                              }),
+                              child: const TTButton(title: "Reset").fullWidthButton(
+                                () async {
+                                  await ref.read(userStatisticProvider.notifier).resetUserStatistic();
+                                  fetchChallenges();
+                                  setState(() {});
+                                },
+                              ),
                             ),
                           ]),
                         ),
@@ -197,7 +194,7 @@ class StatisticScreenState extends ConsumerState<StatisticScreen> with SingleTic
     );
   }
 
-  void fetchChallenges() async {
+  Future<void> fetchChallenges() async {
     List<Challenge> challenges = await StatisticDatabase.instance.readAllShowableChallenges();
     setState(() {
       _challenges = challenges;
