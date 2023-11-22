@@ -50,7 +50,8 @@ class _StatisticDisplayState extends State<StatisticDisplay> {
               ],
               Text(
                 widget.userStatistic[widget.statisticKey]!,
-                style: TTTextTheme.bodyStatisticDisplay(int.tryParse(widget.userStatistic[widget.statisticKey]!.replaceAll("%", ""))!),
+                style: TTTextTheme.bodyStatisticDisplay(int.tryParse(widget.userStatistic[widget.statisticKey]!.replaceAll("%", ""))!,
+                    widget.userStatistic[widget.statisticKey]!.contains("%")),
               ),
             ],
           ),

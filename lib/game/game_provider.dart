@@ -1,6 +1,7 @@
 import "dart:async";
 import 'dart:math';
 import "package:flutter_riverpod/flutter_riverpod.dart";
+
 import "package:tic_tac/general/util/array_position_2d.dart";
 import "package:tic_tac/general/util/dialog.dart";
 import "package:tic_tac/general/util/snackbar.dart";
@@ -87,13 +88,22 @@ class GameService extends StateNotifier<List<List<String>>> {
   final TimeService _timeService;
   final UserStatisticService _userStatisticService;
 
-  bool onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) {
+  bool shouldShowNewMessage(bool shouldShow) {
+    if (_moves != 0 && _moves % 2 == 0 && _playerSymbol == "X" && !shouldShow) {
+      return true;
+    } else if (_moves != 1 && _moves % 2 == 1 && _playerSymbol == "O" && !shouldShow) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) async {
     _onMovePlaced(_playerSymbol, row, col);
     if (_checkGameStatus(_playerSymbol, difficultyDisplay)) {
       return true;
     }
-
     movePlacedByComp(difficultyDisplay);
+
     if (_checkGameStatus(compSymbol, difficultyDisplay)) {
       return true;
     }

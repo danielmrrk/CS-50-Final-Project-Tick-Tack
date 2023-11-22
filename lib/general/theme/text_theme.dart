@@ -27,12 +27,18 @@ class TTTextTheme {
         color: TTColorTheme.highlight,
       );
 
-  static TextStyle bodyStatisticDisplay(int displayValue) => GoogleFonts.montserrat(
+  static TextStyle bodyStatisticDisplay(int displayValue, bool containsExtraChar) => GoogleFonts.montserrat(
         fontSize: displayValue < 10
-            ? 48
-            : displayValue < 100
+            ? containsExtraChar
                 ? 40
-                : 32,
+                : 48
+            : displayValue < 100
+                ? containsExtraChar
+                    ? 32
+                    : 40
+                : containsExtraChar
+                    ? 26
+                    : 32,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       );
