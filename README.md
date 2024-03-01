@@ -11,4 +11,6 @@ The q model implementation can be found in the folder > model-training
 The app can be installed with by cloning the repo and then executing the command:
 **flutter build apk --release**
 
-For that you need install flutter first.
+
+For that you need install flutter first and you have to connect your phone with usb to your laptop/PC.
+Enable in the developer settings the debugging mode, to make sure that it works.
