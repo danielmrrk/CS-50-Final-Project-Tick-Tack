@@ -13,4 +13,4 @@ The app can be installed with by cloning the repo and then executing the command
 
 
 For that you need install flutter first and you have to connect your phone with usb to your laptop/PC.
-Enable in the developer settings the debugging mode, to make sure that it works.
+Enable in the developer settings of your phone the debugging mode, to make sure that it can connect to your phone.
