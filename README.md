@@ -56,9 +56,11 @@ Welcome to Tick Tack! This project is an enhanced version of the classic tic-tac
 ### Development Insights
 #### AI as an Opponent
 Creating a challenging AI opponent was one of the main focuses. The AI uses a custom Q-Learning algorithm, which was trained over thousands of games to perfect its strategy. By associating rewards and penalties with different board states, the AI learns optimal moves and adapts its difficulty based on a randomness factor.
+> look into "model-training" folder if you are interested
 
 #### Creating the App
 Designing Tick Tack involved extensive planning and user flow analysis using Figma. The primary challenges in development included achieving responsive design and integrating AI effectively. The app was built using Dart and Flutter, leveraging my prior experience and interest in mobile app programming.
+> look into "lib" folder if you are interested
 
 #### Challenges and Learnings
 This project was a journey of learning and overcoming obstacles, from designing an engaging UI to implementing complex algorithms. The key takeaways include the importance of planning and adhering to programming paradigms. This project not only improved my coding skills but also taught me the value of patience and persistence.
