@@ -32,13 +32,106 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Android build output
+**/android/**/build/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# iOS build output
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/.generated/
+
+# Xcode related
+xcuserdata/
+*.xcworkspace
+*.xcuserstate
+
+# macOS build output
+macos/Flutter/ephemeral/
+macos/Flutter/Flutter.framework
+macos/Flutter/App.framework
+
+# Windows build output
+windows/flutter/ephemeral/
+windows/Flutter/App.framework
+windows/Flutter/Flutter.framework
+
+# Linux build output
+linux/flutter/ephemeral/
+linux/Flutter/App.framework
+linux/Flutter/Flutter.framework
+
+# Web build output
+web/assets/
+web/flutter.js
+web/main.dart.js
+web/main.dart.js.map
+web/index.html
+
 # Symbolication related
 app.*.symbols
 
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Firebase related
+ios/Pods/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/gradle/
+android/app/google-services.json
+*.keystore
+
+# JetBrains Rider related
+**/.idea
+**/.idea/*
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/dictionaries
+**/.idea/libraries
+**/.idea/shelf
+**/.idea/modules.xml
+**/.idea/misc.xml
+**/.idea/assets-logs
+**/.idea/assets-libraries
+**/.idea/assets-cache
+**/.idea/shelf/*.shelf
+**/.idea/inspectionProfiles/Project_Default.xml
+
+# Visual Studio Code related
+.vscode/*
+
+# Dart specific
+*.dart.js
+*.dart.js.map
+
+# Model training outputs
+model-training/outputs/
+
+# Tictactoe binaries
+tictactoeA/bin/
+tictactoeA/obj/
+tictactoeA/Debug/
+tictactoeA/Release/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Thumbnails
+*.thumb
+
+# Backup files
+*.bak
+
+# Logs
+*.log
+*.log.*
+
+# Compiled Python files
+*.pyc
+__pycache__/
