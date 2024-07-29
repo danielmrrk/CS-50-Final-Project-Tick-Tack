@@ -31,10 +31,9 @@ Welcome to Tick Tack! This project is an enhanced version of the classic tic-tac
     + [Prerequisites](#prerequisites)
     + [Setup](#setup)
   * [Development Insights](#development-insights)
-  * [Future Enhancements](#future-enhancements)
 
 ## Game Roadmap
-- [x] Implemented AI opponents with varying difficulty levels with a custom Q-Learning Algorithm
+- [x] Implemented AI opponents with varying difficulty levels
 - [x] Developed interactive GUI and design using Figma
 - [x] Added timer and challenges for competitive gameplay
 - [x] Integrated ranking system to track player progress
@@ -50,5 +49,16 @@ Welcome to Tick Tack! This project is an enhanced version of the classic tic-tac
 ### Setup
 1. **Clone the repository.**
    ```bash
-   git clone https://github.com/danielmrrk/TickTack.git
+   git clone https://github.com/danielmrrk/TickTack.git](https://github.com/danielmrrk/CS-50-Final-Project-Tick-Tack
    ```
+2. **Run without Debugging in VSCode**
+
+### Development Insights
+#### AI as an Opponent
+Creating a challenging AI opponent was one of the main focuses. The AI uses a custom Q-Learning algorithm, which was trained over thousands of games to perfect its strategy. By associating rewards and penalties with different board states, the AI learns optimal moves and adapts its difficulty based on a randomness factor.
+
+#### Creating the App
+Designing Tick Tack involved extensive planning and user flow analysis using Figma. The primary challenges in development included achieving responsive design and integrating AI effectively. The app was built using Dart and Flutter, leveraging my prior experience and interest in mobile app programming.
+
+#### Challenges and Learnings
+This project was a journey of learning and overcoming obstacles, from designing an engaging UI to implementing complex algorithms. The key takeaways include the importance of planning and adhering to programming paradigms. This project not only improved my coding skills but also taught me the value of patience and persistence.
