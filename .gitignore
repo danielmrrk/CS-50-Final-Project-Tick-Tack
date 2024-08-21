@@ -42,3 +42,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+linux/*
+ios/*
+web/*
+windows/*
+android/*
+macos/*
+.dart_tool/*

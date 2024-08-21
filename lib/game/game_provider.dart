@@ -59,7 +59,8 @@ class TimeService extends StateNotifier<int?> {
   }
 }
 
-final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref) {
+final gameProvider =
+    StateNotifierProvider<GameService, List<List<String>>>((ref) {
   return GameService(
     ref.read(timeProvider.notifier),
     ref.read(userStatisticProvider.notifier),
@@ -67,7 +68,8 @@ final gameProvider = StateNotifierProvider<GameService, List<List<String>>>((ref
 });
 
 class GameService extends StateNotifier<List<List<String>>> {
-  GameService._(this._timeService, this._userStatisticService, this.compSymbol, this._playerSymbol)
+  GameService._(this._timeService, this._userStatisticService, this.compSymbol,
+      this._playerSymbol)
       : super(
           List.generate(
             3,
@@ -75,11 +77,13 @@ class GameService extends StateNotifier<List<List<String>>> {
           ),
         );
 
-  factory GameService(TimeService timeService, UserStatisticService userStatisticService) {
+  factory GameService(
+      TimeService timeService, UserStatisticService userStatisticService) {
     bool randomTurn = Random().nextInt(2) == 0;
     String compSymbol = randomTurn ? "O" : "X";
     String playerSymbol = randomTurn ? "X" : "O";
-    return GameService._(timeService, userStatisticService, compSymbol, playerSymbol);
+    return GameService._(
+        timeService, userStatisticService, compSymbol, playerSymbol);
   }
 
   int _moves = 0;
@@ -91,13 +95,17 @@ class GameService extends StateNotifier<List<List<String>>> {
   bool shouldShowNewMessage(bool shouldShow) {
     if (_moves != 0 && _moves % 2 == 0 && _playerSymbol == "X" && !shouldShow) {
       return true;
-    } else if (_moves != 1 && _moves % 2 == 1 && _playerSymbol == "O" && !shouldShow) {
+    } else if (_moves != 1 &&
+        _moves % 2 == 1 &&
+        _playerSymbol == "O" &&
+        !shouldShow) {
       return true;
     }
     return false;
   }
 
-  Future<bool> onPlayerPlacedMove(int row, int col, Difficulty difficultyDisplay) async {
+  Future<bool> onPlayerPlacedMove(
+      int row, int col, Difficulty difficultyDisplay) async {
     _onMovePlaced(_playerSymbol, row, col);
     if (_checkGameStatus(_playerSymbol, difficultyDisplay)) {
       return true;
@@ -126,10 +134,13 @@ class GameService extends StateNotifier<List<List<String>>> {
       _timeService.cancelTimer();
       bool userHasWon = currentPlayer == _playerSymbol;
       CustomDialog.showGetDialog(
-        title: userHasWon ? "Triumph is yours. A well deserved victory!" : "What an unfortunate loss. Good luck next time!",
+        title: userHasWon
+            ? "Triumph is yours. A well deserved victory!"
+            : "What an unfortunate loss. Good luck next time!",
         content: CustomDialog.buildRestartGameDialogContent(),
       );
-      _userStatisticService.updateGameCount(difficulty.displayName, userHasWon ? kWinKey : kLossKey, (_moves / 2).ceil());
+      _userStatisticService.updateGameCount(difficulty.displayName,
+          userHasWon ? kWinKey : kLossKey, (_moves / 2).ceil());
       return true;
     } else if (_moves == 9) {
       _timeService.cancelTimer();
@@ -158,7 +169,8 @@ class GameService extends StateNotifier<List<List<String>>> {
         return true;
       }
     }
-    if ([0, 1, 2].every((i) => state[i][i].replaceAll("'", "") == currentPlayer) ||
+    if ([0, 1, 2]
+            .every((i) => state[i][i].replaceAll("'", "") == currentPlayer) ||
         [0, 1, 2].every(
           (j) => state[2 - j][j].replaceAll("'", "") == currentPlayer,
         )) {
@@ -216,7 +228,8 @@ class GameService extends StateNotifier<List<List<String>>> {
       _onMovePlaced(compSymbol, position.row, position.col);
     } catch (e) {
       if (e is NoSuchMethodError) {
-        showSimpleGetSnackbar("Sorry the model does not know this position.", 3);
+        showSimpleGetSnackbar(
+            "Sorry the model does not know this position.", 3);
       }
       return;
     }
