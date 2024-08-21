@@ -143,3 +143,4 @@ windows/*
 android/*
 macos/*
 .dart_tool/*
+.metadata
